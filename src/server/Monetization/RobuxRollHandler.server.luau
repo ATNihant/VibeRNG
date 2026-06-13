@@ -84,7 +84,6 @@ MarketplaceService.ProcessReceipt = function(receiptInfo)
 		local firstItem = RollHandler.PerformFreeRoll(player, "Rare")
 		if firstItem then
 			for i = 2, 10 do
-				task.wait(0.3) -- Small delay between rolls for UX
 				RollHandler.PerformFreeRoll(player, nil)
 			end
 			granted = true
@@ -96,7 +95,6 @@ MarketplaceService.ProcessReceipt = function(receiptInfo)
 		local epicItem = RollHandler.PerformFreeRoll(player, "Epic")
 		if epicItem then
 			for i = 2, 30 do
-				task.wait(0.2)
 				RollHandler.PerformFreeRoll(player, nil)
 			end
 			granted = true

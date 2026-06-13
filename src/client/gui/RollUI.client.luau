@@ -79,6 +79,19 @@ reelFrame.BackgroundTransparency = 1
 reelFrame.ZIndex = 12
 reelFrame.Parent = reelContainer
 
+-- Aura Rays (Background for Epic+)
+local auraImage = Instance.new("ImageLabel")
+auraImage.Name = "AuraRays"
+auraImage.Size = UDim2.fromOffset(1200, 1200)
+auraImage.Position = UDim2.fromScale(0.5, 0.5)
+auraImage.AnchorPoint = Vector2.new(0.5, 0.5)
+auraImage.BackgroundTransparency = 1
+auraImage.Image = "rbxassetid://136817114" -- Common sunburst light rays
+auraImage.ImageTransparency = 0.5
+auraImage.Visible = false
+auraImage.ZIndex = 10
+auraImage.Parent = rollScreen
+
 -- Result card
 local resultCard = Instance.new("Frame")
 resultCard.Name = "ResultCard"
@@ -227,6 +240,105 @@ coinCorner.CornerRadius = UDim.new(0, 8)
 coinCorner.Parent = coinLabel
 
 -- ============================================================
+-- MAIN ROLL BUTTON & AUTO-ROLL (Bottom Center)
+-- ============================================================
+local rollButtonContainer = Instance.new("Frame")
+rollButtonContainer.Name = "RollButtonContainer"
+rollButtonContainer.Size = UDim2.fromOffset(280, 60)
+rollButtonContainer.Position = UDim2.new(0.5, 0, 1, -80)
+rollButtonContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+rollButtonContainer.BackgroundTransparency = 1
+rollButtonContainer.ZIndex = 5
+rollButtonContainer.Parent = rollScreen
+
+-- Glowing Pulse Background
+local rollGlow = Instance.new("Frame")
+rollGlow.Size = UDim2.fromScale(1, 1)
+rollGlow.Position = UDim2.fromScale(0.5, 0.5)
+rollGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+rollGlow.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+rollGlow.BackgroundTransparency = 0.2
+rollGlow.ZIndex = 4
+rollGlow.Parent = rollButtonContainer
+
+local glowCorner = Instance.new("UICorner")
+glowCorner.CornerRadius = UDim.new(0, 12)
+glowCorner.Parent = rollGlow
+
+-- Main Roll Button
+local mainRollButton = Instance.new("TextButton")
+mainRollButton.Name = "MainRollButton"
+mainRollButton.Size = UDim2.fromOffset(220, 60)
+mainRollButton.Position = UDim2.new(0, 0, 0, 0)
+mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+mainRollButton.BorderSizePixel = 0
+mainRollButton.Font = Enum.Font.GothamBold
+mainRollButton.TextSize = 24
+mainRollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+mainRollButton.Text = "🎲 ROLL"
+mainRollButton.ZIndex = 5
+mainRollButton.Parent = rollButtonContainer
+
+local mainRollCorner = Instance.new("UICorner")
+mainRollCorner.CornerRadius = UDim.new(0, 12)
+mainRollCorner.Parent = mainRollButton
+
+local mainRollStroke = Instance.new("UIStroke")
+mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
+mainRollStroke.Thickness = 2
+mainRollStroke.Parent = mainRollButton
+
+local mainRollGradient = Instance.new("UIGradient")
+mainRollGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 200)),
+})
+mainRollGradient.Rotation = 90
+mainRollGradient.Parent = mainRollButton
+
+-- Auto-Roll Button
+local autoRollButton = Instance.new("TextButton")
+autoRollButton.Name = "AutoRollButton"
+autoRollButton.Size = UDim2.fromOffset(50, 60)
+autoRollButton.Position = UDim2.new(0, 230, 0, 0)
+autoRollButton.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+autoRollButton.BorderSizePixel = 0
+autoRollButton.Font = Enum.Font.GothamBold
+autoRollButton.TextSize = 14
+autoRollButton.TextColor3 = Color3.fromRGB(150, 150, 160)
+autoRollButton.Text = "AUTO\nOFF"
+autoRollButton.ZIndex = 5
+autoRollButton.Parent = rollButtonContainer
+
+local autoRollCorner = Instance.new("UICorner")
+autoRollCorner.CornerRadius = UDim.new(0, 12)
+autoRollCorner.Parent = autoRollButton
+
+local autoRollStroke = Instance.new("UIStroke")
+autoRollStroke.Color = Color3.fromRGB(80, 80, 90)
+autoRollStroke.Thickness = 2
+autoRollStroke.Parent = autoRollButton
+
+local autoRollEnabled = false
+local AUTO_ROLL_GAMEPASS_ID = 12345678 -- Placeholder Gamepass ID
+local MarketplaceService = game:GetService("MarketplaceService")
+
+-- Pulse Animation Loop
+task.spawn(function()
+	while true do
+		local tweenOut = TweenService:Create(rollGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+			Size = UDim2.fromScale(1.1, 1.2),
+			BackgroundTransparency = 1
+		})
+		tweenOut:Play()
+		tweenOut.Completed:Wait()
+		rollGlow.Size = UDim2.fromScale(1, 1)
+		rollGlow.BackgroundTransparency = 0.2
+		task.wait(0.1)
+	end
+end)
+
+-- ============================================================
 -- COIN DROPS (duplicate from RarityConfig for display)
 -- ============================================================
 local COIN_DROPS = {
@@ -246,6 +358,12 @@ local isAnimating = false
 local function playRollAnimation(item)
 	if isAnimating then return end
 	isAnimating = true
+
+	-- Disable roll button
+	mainRollButton.Text = "Rolling..."
+	mainRollButton.BackgroundColor3 = Color3.fromRGB(80, 80, 90)
+	mainRollStroke.Color = Color3.fromRGB(100, 100, 110)
+	mainRollGradient.Enabled = false
 
 	local rarityColor = RARITY_COLORS[item.rarity] or Color3.fromRGB(255, 255, 255)
 	local bgColor = RARITY_BG_COLORS[item.rarity] or Color3.fromRGB(25, 25, 30)
@@ -393,7 +511,12 @@ local function playRollAnimation(item)
 	end
 
 	nameLabel.Text = item.name
-	nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	nameLabel.TextColor3 = rarityColor
+	
+	local nameStroke = nameLabel:FindFirstChild("UIStroke") or Instance.new("UIStroke")
+	nameStroke.Color = Color3.fromRGB(20, 20, 25)
+	nameStroke.Thickness = 2
+	nameStroke.Parent = nameLabel
 
 	rarityLabel.Text = "  " .. item.rarity:upper() .. "  "
 	rarityLabel.TextColor3 = rarityColor
@@ -413,6 +536,17 @@ local function playRollAnimation(item)
 	resultCard.Position = UDim2.fromScale(0.5, 1.5) -- start below screen
 	resultCard.Visible = true
 	resultCard.Size = UDim2.fromOffset(320, 420)
+	
+	if isEpicPlus then
+		auraImage.Visible = true
+		auraImage.ImageColor3 = rarityColor
+		auraImage.Rotation = 0
+		TweenService:Create(auraImage, TweenInfo.new(4, Enum.EasingStyle.Linear), {
+			Rotation = 180
+		}):Play()
+	else
+		auraImage.Visible = false
+	end
 
 	local entranceTween = TweenService:Create(
 		resultCard,
@@ -420,6 +554,43 @@ local function playRollAnimation(item)
 		{ Position = UDim2.fromScale(0.5, 0.5) }
 	)
 	entranceTween:Play()
+	
+	-- Screen Shake
+	if item.rarity == "Legendary" or isMythic then
+		task.spawn(function()
+			local character = player.Character
+			local humanoid = character and character:FindFirstChild("Humanoid")
+			if humanoid then
+				local originalOffset = humanoid.CameraOffset
+				local intensity = isMythic and 1.5 or 0.8
+				for i = 1, 15 do
+					humanoid.CameraOffset = originalOffset + Vector3.new(
+						(math.random() - 0.5) * intensity,
+						(math.random() - 0.5) * intensity,
+						(math.random() - 0.5) * intensity
+					)
+					task.wait(0.03)
+				end
+				humanoid.CameraOffset = originalOffset
+			end
+		end)
+	end
+	
+	-- Wobble floating animation
+	task.spawn(function()
+		entranceTween.Completed:Wait()
+		while isAnimating do
+			TweenService:Create(resultCard, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+				Position = UDim2.new(0.5, 0, 0.5, -10)
+			}):Play()
+			task.wait(1)
+			if not isAnimating then break end
+			TweenService:Create(resultCard, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+				Position = UDim2.new(0.5, 0, 0.5, 10)
+			}):Play()
+			task.wait(1)
+		end
+	end)
 
 	-- Mythic: pulse the card
 	if isMythic then
@@ -453,11 +624,18 @@ local function playRollAnimation(item)
 
 	resultCard.Visible = false
 	overlay.Visible = false
+	auraImage.Visible = false
 
 	-- Clean up reel items
 	for _, child in ipairs(reelFrame:GetChildren()) do
 		child:Destroy()
 	end
+
+	-- Re-enable roll button
+	mainRollButton.Text = "🎲 ROLL"
+	mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+	mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
+	mainRollGradient.Enabled = true
 
 	isAnimating = false
 end
@@ -465,9 +643,98 @@ end
 -- ============================================================
 -- CONNECTION
 -- ============================================================
+local RollRequestedEvent = RemoteEvents:WaitForChild("RollRequested")
+
+local function requestRoll()
+	if not isAnimating then
+		RollRequestedEvent:FireServer()
+		
+		-- Provide immediate visual feedback before the server responds
+		mainRollButton.Text = "Requesting..."
+		mainRollButton.BackgroundColor3 = Color3.fromRGB(80, 80, 90)
+		mainRollStroke.Color = Color3.fromRGB(100, 100, 110)
+		mainRollGradient.Enabled = false
+	end
+end
+
+-- Hover Tweens
+mainRollButton.MouseEnter:Connect(function()
+	if not isAnimating then
+		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(230, 65),
+			Position = UDim2.fromOffset(-5, -2)
+		}):Play()
+	end
+end)
+
+mainRollButton.MouseLeave:Connect(function()
+	if not isAnimating then
+		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(220, 60),
+			Position = UDim2.fromOffset(0, 0)
+		}):Play()
+	end
+end)
+
+-- Click Tweens & Logic
+mainRollButton.MouseButton1Down:Connect(function()
+	if not isAnimating then
+		TweenService:Create(mainRollButton, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(210, 55),
+			Position = UDim2.fromOffset(5, 2)
+		}):Play()
+	end
+end)
+
+mainRollButton.MouseButton1Up:Connect(function()
+	if not isAnimating then
+		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(230, 65),
+			Position = UDim2.fromOffset(-5, -2)
+		}):Play()
+	end
+end)
+
+mainRollButton.MouseButton1Click:Connect(requestRoll)
+
+autoRollButton.MouseButton1Click:Connect(function()
+	local success, hasPass = pcall(function()
+		return MarketplaceService:UserOwnsGamePassAsync(player.UserId, AUTO_ROLL_GAMEPASS_ID)
+	end)
+	
+	if success and hasPass then
+		autoRollEnabled = not autoRollEnabled
+		if autoRollEnabled then
+			autoRollButton.BackgroundColor3 = Color3.fromRGB(30, 180, 70)
+			autoRollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+			autoRollButton.Text = "AUTO\nON"
+			autoRollStroke.Color = Color3.fromRGB(50, 220, 100)
+			
+			-- Instantly trigger if idle
+			if not isAnimating then
+				requestRoll()
+			end
+		else
+			autoRollButton.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+			autoRollButton.TextColor3 = Color3.fromRGB(150, 150, 160)
+			autoRollButton.Text = "AUTO\nOFF"
+			autoRollStroke.Color = Color3.fromRGB(80, 80, 90)
+		end
+	else
+		-- Prompt purchase
+		MarketplaceService:PromptGamePassPurchase(player, AUTO_ROLL_GAMEPASS_ID)
+	end
+end)
+
 RollResultEvent.OnClientEvent:Connect(function(item)
 	if item and item.name then
 		playRollAnimation(item)
+		
+		-- Loop auto roll if enabled
+		if autoRollEnabled then
+			task.wait(0.2)
+			requestRoll()
+		end
 	end
 end)
 

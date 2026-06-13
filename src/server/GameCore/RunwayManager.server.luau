@@ -277,8 +277,12 @@ CastVote.OnServerEvent:Connect(function(player, targetUserId, stars)
 
 	-- Record vote
 	if not runwayState.votes[targetUserId] then
-		runwayState.votes[targetUserId] = { total = 0, count = 0 }
+		runwayState.votes[targetUserId] = { total = 0, count = 0, voters = {} }
 	end
+
+	-- Check if player already voted
+	if runwayState.votes[targetUserId].voters[player.UserId] then return end
+	runwayState.votes[targetUserId].voters[player.UserId] = true
 
 	runwayState.votes[targetUserId].total = runwayState.votes[targetUserId].total + stars
 	runwayState.votes[targetUserId].count = runwayState.votes[targetUserId].count + 1

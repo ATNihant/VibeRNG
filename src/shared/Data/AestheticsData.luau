@@ -75,6 +75,9 @@ AestheticsData.Body = {
 
 	-- MYTHIC (1) — Frutiger Aero
 	{ id = "B017", name = "Butterfly Aero Suit",    aesthetic = "Frutiger Aero",  slot = "Body", rarity = "Mythic",    icon = "rbxassetid://0", model = "rbxassetid://0", isCapsule = false, isVaulted = false },
+
+	-- DESIGNER CAPSULE
+	{ id = "CAP001", name = "Neon Dreamcoat",       aesthetic = "Cyber-Goth",     slot = "Body", rarity = "Legendary", icon = "rbxassetid://0", model = "rbxassetid://0", isCapsule = true,  isVaulted = false },
 }
 
 -- ============================================================
@@ -114,8 +117,7 @@ AestheticsData.Legs = {
 -- UTILITY: Lookup helpers
 -- ============================================================
 
---- Get all items across all slots as a flat list
-function AestheticsData.getAllItems()
+local function buildAllItems()
 	local all = {}
 	for _, item in ipairs(AestheticsData.Head) do
 		table.insert(all, item)
@@ -129,16 +131,21 @@ function AestheticsData.getAllItems()
 	return all
 end
 
+AestheticsData.ALL_ITEMS = buildAllItems()
+
+local itemById = {}
+for _, item in ipairs(AestheticsData.ALL_ITEMS) do
+	itemById[item.id] = item
+end
+
+--- Get all items across all slots as a flat list
+function AestheticsData.getAllItems()
+	return AestheticsData.ALL_ITEMS
+end
+
 --- Find an item by its ID across all slots
 function AestheticsData.getItemById(itemId: string)
-	for _, slotItems in pairs({ AestheticsData.Head, AestheticsData.Body, AestheticsData.Legs }) do
-		for _, item in ipairs(slotItems) do
-			if item.id == itemId then
-				return item
-			end
-		end
-	end
-	return nil
+	return itemById[itemId]
 end
 
 --- Get items for a specific slot

@@ -189,6 +189,7 @@ local function createStarButtons()
 
 	for i = 1, 5 do
 		local star = Instance.new("TextButton")
+		star.Name = "Star_" .. tostring(i)
 		star.Size = UDim2.fromOffset(32, 32)
 		star.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
 		star.BorderSizePixel = 0
@@ -214,7 +215,10 @@ local function createStarButtons()
 				end
 				-- Highlight selected
 				for j = 1, i do
-					local starBtn = starsFrame:FindFirstChild("") -- We need to index them
+					local starBtn = starsFrame:FindFirstChild("Star_" .. tostring(j))
+					if starBtn then
+						starBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 50)
+					end
 				end
 				star.BackgroundColor3 = Color3.fromRGB(255, 200, 50)
 			end

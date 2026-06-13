@@ -8,10 +8,6 @@
 -- Daily login reward
 local Players = game:GetService("Players")
 local DAILY_LOGIN_REWARD = 100
-local DAILY_LOGIN_KEY = "DailyLogin"
-
--- Track daily logins per session (simple in-memory, resets on server restart)
-local dailyLoginTracker = {}
 
 local function awardDailyLogin(player)
 	-- Wait for DataManager
@@ -20,15 +16,18 @@ local function awardDailyLogin(player)
 	end
 	local DataManager = _G.DataManager
 
-	local userId = player.UserId
-	local today = os.date("!%Y-%m-%d")
+	local data = DataManager.GetData(player)
+	if not data then return end
 
-	if dailyLoginTracker[userId] == today then
+	local today = os.date("!%Y-%m-%d")
+	local lastRewardDay = os.date("!%Y-%m-%d", data.LastDailyReward or 0)
+
+	if lastRewardDay == today then
 		return -- Already awarded today
 	end
 
+	data.LastDailyReward = os.time()
 	DataManager.AddCoins(player, DAILY_LOGIN_REWARD)
-	dailyLoginTracker[userId] = today
 
 	print("[VibeCoinEconomy] Daily login reward (" .. DAILY_LOGIN_REWARD .. " coins) given to " .. player.Name)
 end
@@ -40,10 +39,7 @@ Players.PlayerAdded:Connect(function(player)
 	awardDailyLogin(player)
 end)
 
--- Clean up tracker on leave
-Players.PlayerRemoving:Connect(function(player)
-	dailyLoginTracker[player.UserId] = nil
-end)
+
 
 print("[VibeCoinEconomy] Initialized")
 

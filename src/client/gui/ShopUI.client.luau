@@ -135,66 +135,10 @@ balanceLabel.Text = "💰 0 Vibe Coins"
 balanceLabel.ZIndex = 7
 balanceLabel.Parent = balanceFrame
 
--- Standard roll button (costs Vibe Coins)
-local rollButton = Instance.new("TextButton")
-rollButton.Name = "StandardRoll"
-rollButton.Size = UDim2.new(0.9, 0, 0, 50)
-rollButton.Position = UDim2.new(0.5, 0, 0, 108)
-rollButton.AnchorPoint = Vector2.new(0.5, 0)
-rollButton.BackgroundColor3 = Color3.fromRGB(139, 0, 255)
-rollButton.BorderSizePixel = 0
-rollButton.Font = Enum.Font.GothamBold
-rollButton.TextSize = 18
-rollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-rollButton.Text = "🎲 ROLL (100 Coins)"
-rollButton.ZIndex = 7
-rollButton.Parent = mainFrame
-
-local rollCorner = Instance.new("UICorner")
-rollCorner.CornerRadius = UDim.new(0, 10)
-rollCorner.Parent = rollButton
-
--- Roll button gradient
-local rollGradient = Instance.new("UIGradient")
-rollGradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(139, 0, 255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 50, 200)),
-})
-rollGradient.Parent = rollButton
-
-rollButton.MouseButton1Click:Connect(function()
-	if localPlayerData and localPlayerData.VibeCoin >= ROLL_COST then
-		RollRequested:FireServer()
-		-- Brief visual feedback
-		rollButton.Text = "🎲 Rolling..."
-		task.delay(1, function()
-			rollButton.Text = "🎲 ROLL (100 Coins)"
-		end)
-	else
-		-- Not enough coins
-		rollButton.Text = "❌ Not enough coins!"
-		rollButton.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-		task.delay(1.5, function()
-			rollButton.Text = "🎲 ROLL (100 Coins)"
-			rollButton.BackgroundColor3 = Color3.fromRGB(139, 0, 255)
-		end)
-	end
-end)
-
--- Divider
-local divider = Instance.new("Frame")
-divider.Size = UDim2.new(0.85, 0, 0, 1)
-divider.Position = UDim2.new(0.5, 0, 0, 172)
-divider.AnchorPoint = Vector2.new(0.5, 0)
-divider.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-divider.BorderSizePixel = 0
-divider.ZIndex = 6
-divider.Parent = mainFrame
-
 -- "Premium Packs" section header
 local premiumLabel = Instance.new("TextLabel")
 premiumLabel.Size = UDim2.new(0.9, 0, 0, 25)
-premiumLabel.Position = UDim2.new(0.5, 0, 0, 180)
+premiumLabel.Position = UDim2.new(0.5, 0, 0, 108)
 premiumLabel.AnchorPoint = Vector2.new(0.5, 0)
 premiumLabel.BackgroundTransparency = 1
 premiumLabel.Font = Enum.Font.GothamBold
@@ -207,8 +151,8 @@ premiumLabel.Parent = mainFrame
 
 -- Product cards scroll
 local productScroll = Instance.new("ScrollingFrame")
-productScroll.Size = UDim2.new(0.9, 0, 1, -220)
-productScroll.Position = UDim2.new(0.5, 0, 0, 210)
+productScroll.Size = UDim2.new(0.9, 0, 1, -148)
+productScroll.Position = UDim2.new(0.5, 0, 0, 138)
 productScroll.AnchorPoint = Vector2.new(0.5, 0)
 productScroll.BackgroundTransparency = 1
 productScroll.BorderSizePixel = 0

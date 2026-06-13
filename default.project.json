@@ -107,7 +107,6 @@
         "Floor": {
           "$className": "Part",
           "$properties": {
-            "Name": "Floor",
             "Anchored": true,
             "Size": [200, 1, 200],
             "Position": [0, 0, 0],
@@ -125,7 +124,6 @@
         "Catwalk": {
           "$className": "Part",
           "$properties": {
-            "Name": "Catwalk",
             "Anchored": true,
             "Size": [100, 1, 10],
             "Position": [60, 0.5, 0],
@@ -137,7 +135,6 @@
         "RunwayGate": {
           "$className": "Part",
           "$properties": {
-            "Name": "RunwayGate",
             "Anchored": true,
             "Size": [1, 10, 10],
             "Position": [10, 5, 0],

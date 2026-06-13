@@ -17,14 +17,11 @@ local ServerAnnouncement = RemoteEvents:WaitForChild("ServerAnnouncement")
 -- ============================================================
 -- CONFIGURATION
 -- ============================================================
-local ROLL_COOLDOWN = 5 -- seconds
-local ROLL_COST = 100 -- Vibe Coins per standard roll
 local SLOTS = { "Head", "Body", "Legs" }
 
 -- ============================================================
 -- STATE
 -- ============================================================
-local playerCooldowns = {} -- [userId] = os.clock() of last roll
 local activeCapsuleId = nil -- Set by HypeDropScheduler via _G
 
 -- ============================================================
@@ -45,7 +42,7 @@ local function weightedRandom(items)
 			continue
 		end
 
-		local weight = RarityConfig.weights[item.rarity]
+		local weight = RarityConfig.WEIGHTS[item.rarity]
 		if weight then
 			totalWeight = totalWeight + weight
 			table.insert(weightedItems, { item = item, weight = weight })
@@ -78,33 +75,14 @@ end
 local function handleRollRequest(player)
 	local userId = player.UserId
 
-	-- Check cooldown
-	local now = os.clock()
-	if playerCooldowns[userId] and (now - playerCooldowns[userId]) < ROLL_COOLDOWN then
-		return -- Silently ignore (no error to client)
-	end
-
 	-- Wait for DataManager to be available
 	while not _G.DataManager do
 		task.wait(0.1)
 	end
 	local DataManager = _G.DataManager
 
-	-- Check if player can afford a roll (100 Vibe Coins for standard roll)
 	local playerData = DataManager.GetData(player)
 	if not playerData then return end
-
-	-- Deduct coins (free rolls during early testing if player has 0 coins and 0 total rolls)
-	local isFreeRoll = (playerData.VibeCoin < ROLL_COST and playerData.TotalRolls < 5)
-	if not isFreeRoll then
-		if not DataManager.SpendCoins(player, ROLL_COST) then
-			-- Not enough coins — could fire an error event to client in the future
-			return
-		end
-	end
-
-	-- Set cooldown
-	playerCooldowns[userId] = now
 
 	-- Pick a random slot (equal 33% each)
 	local slot = SLOTS[math.random(1, #SLOTS)]
@@ -213,11 +191,6 @@ end
 -- CONNECTIONS
 -- ============================================================
 RollRequested.OnServerEvent:Connect(handleRollRequest)
-
--- Clean up cooldowns when player leaves
-Players.PlayerRemoving:Connect(function(player)
-	playerCooldowns[player.UserId] = nil
-end)
 
 _G.RollHandler = RollHandler
 

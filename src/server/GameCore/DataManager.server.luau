@@ -156,7 +156,7 @@ function DataManager.AddItemToLookbook(player, slot, itemId, rarity)
 	data.TotalRolls = data.TotalRolls + 1
 
 	-- Award Vibe Coins for the rarity
-	local coinDrop = RarityConfig.coinDrops[rarity] or 0
+	local coinDrop = RarityConfig.COIN_DROPS[rarity] or 0
 	data.VibeCoin = math.min(data.VibeCoin + coinDrop, MAX_VIBE_COIN)
 
 	-- Save and sync to client
@@ -172,6 +172,7 @@ function DataManager.AddCoins(player, amount)
 	if not data then return false end
 
 	data.VibeCoin = math.min(data.VibeCoin + amount, MAX_VIBE_COIN)
+	DataManager.SavePlayer(player)
 	LookbookDataEvent:FireClient(player, data)
 	return true
 end
@@ -183,6 +184,7 @@ function DataManager.SpendCoins(player, amount)
 	if data.VibeCoin < amount then return false end
 
 	data.VibeCoin = data.VibeCoin - amount
+	DataManager.SavePlayer(player)
 	LookbookDataEvent:FireClient(player, data)
 	return true
 end
@@ -192,6 +194,8 @@ function DataManager.RecordRunwayParticipation(player)
 	local data = playerDataCache[player.UserId]
 	if not data then return end
 	data.RunwayParticipations = data.RunwayParticipations + 1
+	DataManager.SavePlayer(player)
+	LookbookDataEvent:FireClient(player, data)
 end
 
 --- Record a runway win
@@ -199,6 +203,8 @@ function DataManager.RecordRunwayWin(player)
 	local data = playerDataCache[player.UserId]
 	if not data then return end
 	data.RunwayWins = data.RunwayWins + 1
+	DataManager.SavePlayer(player)
+	LookbookDataEvent:FireClient(player, data)
 end
 
 --- Add a vaulted item
@@ -206,6 +212,8 @@ function DataManager.AddVaultedItem(player, itemId)
 	local data = playerDataCache[player.UserId]
 	if not data then return end
 	data.VaultedItems[itemId] = true
+	DataManager.SavePlayer(player)
+	LookbookDataEvent:FireClient(player, data)
 end
 
 -- ============================================================

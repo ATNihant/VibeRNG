@@ -37,6 +37,7 @@ function LookbookSchema.getDefault()
 		-- META
 		FirstJoin = 0,          -- os.time() at first ever join
 		LastSave = 0,           -- os.time() at last successful save
+		LastDailyReward = 0,    -- os.time() of last daily login reward
 		Version = 1,            -- schema version for future migrations
 	}
 end

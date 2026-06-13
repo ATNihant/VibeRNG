@@ -3,6 +3,10 @@
 -- Checks hourly whether a capsule should be active based on UTC day of week
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Data = ReplicatedStorage:WaitForChild("Data")
+local AestheticsData = require(Data:WaitForChild("AestheticsData"))
+
 local ServerAnnouncement = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ServerAnnouncement")
 
 -- ============================================================
@@ -37,8 +41,14 @@ local function getCurrentCapsuleItem()
 	-- For now, return the first capsule item
 	-- In production, rotate based on week number:
 	-- local weekNum = math.floor(os.time() / (7 * 86400))
-	-- return CAPSULE_SCHEDULE[(weekNum % #CAPSULE_SCHEDULE) + 1]
-	return CAPSULE_SCHEDULE[1]
+	-- local capsuleInfo = CAPSULE_SCHEDULE[(weekNum % #CAPSULE_SCHEDULE) + 1]
+	local capsuleInfo = CAPSULE_SCHEDULE[1]
+	local item = AestheticsData.getItemById(capsuleInfo.id)
+	if item and item.isCapsule and not item.isVaulted then
+		return item
+	end
+	warn("[HypeDropScheduler] Scheduled capsule item is missing or unavailable: " .. tostring(capsuleInfo.id))
+	return nil
 end
 
 -- ============================================================
