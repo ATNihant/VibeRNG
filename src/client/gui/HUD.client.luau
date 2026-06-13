@@ -1,5 +1,5 @@
 -- HUD.client.luau — Persistent heads-up display
--- Shows Vibe Coin counter, total rolls, server announcements
+-- Shows Vibe Coin counter, total rolls, server announcements, and inventory button
 -- Source of truth: docs/implementation-plan.md Phase 5, 9
 
 local Players = game:GetService("Players")
@@ -237,6 +237,121 @@ end)
 -- ============================================================
 ServerAnnouncement.OnClientEvent:Connect(function(message, tier)
 	showAnnouncement(message, tier)
+end)
+
+-- ============================================================
+-- INVENTORY BUTTON (bottom-left)
+-- ============================================================
+local inventoryBtnFrame = Instance.new("Frame")
+inventoryBtnFrame.Name = "InventoryButtonFrame"
+inventoryBtnFrame.Size = UDim2.fromOffset(168, 52)
+inventoryBtnFrame.Position = UDim2.new(0, 12, 1, -70)
+inventoryBtnFrame.AnchorPoint = Vector2.new(0, 0)
+inventoryBtnFrame.BackgroundTransparency = 1
+inventoryBtnFrame.ZIndex = 5
+inventoryBtnFrame.Parent = hudScreen
+
+-- Glow pulse background
+local invGlow = Instance.new("Frame")
+invGlow.Size = UDim2.fromScale(1, 1)
+invGlow.Position = UDim2.fromScale(0.5, 0.5)
+invGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+invGlow.BackgroundColor3 = Color3.fromRGB(100, 20, 200)
+invGlow.BackgroundTransparency = 0.3
+invGlow.ZIndex = 4
+invGlow.Parent = inventoryBtnFrame
+
+local invGlowCorner = Instance.new("UICorner")
+invGlowCorner.CornerRadius = UDim.new(0, 14)
+invGlowCorner.Parent = invGlow
+
+-- Inventory button
+local inventoryButton = Instance.new("TextButton")
+inventoryButton.Name = "InventoryButton"
+inventoryButton.Size = UDim2.fromOffset(168, 52)
+inventoryButton.Position = UDim2.fromOffset(0, 0)
+inventoryButton.BackgroundColor3 = Color3.fromRGB(70, 10, 150)
+inventoryButton.BorderSizePixel = 0
+inventoryButton.Font = Enum.Font.GothamBold
+inventoryButton.TextSize = 18
+inventoryButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+inventoryButton.Text = "🎒  INVENTORY"
+inventoryButton.ZIndex = 5
+inventoryButton.Parent = inventoryBtnFrame
+
+local invBtnCorner = Instance.new("UICorner")
+invBtnCorner.CornerRadius = UDim.new(0, 12)
+invBtnCorner.Parent = inventoryButton
+
+local invBtnStroke = Instance.new("UIStroke")
+invBtnStroke.Color = Color3.fromRGB(160, 80, 255)
+invBtnStroke.Thickness = 2
+invBtnStroke.Parent = inventoryButton
+
+local invBtnGradient = Instance.new("UIGradient")
+invBtnGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(130, 30, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(70, 10, 160)),
+})
+invBtnGradient.Rotation = 90
+invBtnGradient.Parent = inventoryButton
+
+-- Pulse animation loop
+task.spawn(function()
+	while true do
+		local tweenOut = TweenService:Create(invGlow, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+			Size = UDim2.fromScale(1.12, 1.3),
+			BackgroundTransparency = 1,
+		})
+		tweenOut:Play()
+		tweenOut.Completed:Wait()
+		invGlow.Size = UDim2.fromScale(1, 1)
+		invGlow.BackgroundTransparency = 0.3
+		task.wait(0.2)
+	end
+end)
+
+-- Hover / click animations
+inventoryButton.MouseEnter:Connect(function()
+	TweenService:Create(inventoryButton, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Size = UDim2.fromOffset(176, 56),
+		Position = UDim2.fromOffset(-4, -2),
+	}):Play()
+end)
+inventoryButton.MouseLeave:Connect(function()
+	TweenService:Create(inventoryButton, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Size = UDim2.fromOffset(168, 52),
+		Position = UDim2.fromOffset(0, 0),
+	}):Play()
+end)
+inventoryButton.MouseButton1Down:Connect(function()
+	TweenService:Create(inventoryButton, TweenInfo.new(0.1), {
+		Size = UDim2.fromOffset(160, 48),
+		Position = UDim2.fromOffset(4, 2),
+	}):Play()
+end)
+inventoryButton.MouseButton1Up:Connect(function()
+	TweenService:Create(inventoryButton, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Size = UDim2.fromOffset(176, 56),
+		Position = UDim2.fromOffset(-4, -2),
+	}):Play()
+end)
+
+inventoryButton.MouseButton1Click:Connect(function()
+	if _G.InventoryController then
+		local lookbookScreen = playerGui:FindFirstChild("LookbookScreen")
+		if lookbookScreen and lookbookScreen.Enabled then
+			_G.InventoryController.Close()
+		else
+			_G.InventoryController.Open()
+		end
+	else
+		-- Fallback: toggle directly
+		local lookbookScreen = playerGui:FindFirstChild("LookbookScreen")
+		if lookbookScreen then
+			lookbookScreen.Enabled = not lookbookScreen.Enabled
+		end
+	end
 end)
 
 hudScreen.Enabled = true

@@ -95,7 +95,7 @@ auraImage.Parent = rollScreen
 -- Result card
 local resultCard = Instance.new("Frame")
 resultCard.Name = "ResultCard"
-resultCard.Size = UDim2.fromOffset(320, 420)
+resultCard.Size = UDim2.fromOffset(320, 460)
 resultCard.Position = UDim2.fromScale(0.5, 0.5)
 resultCard.AnchorPoint = Vector2.new(0.5, 0.5)
 resultCard.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
@@ -238,6 +238,39 @@ coinLabel.Parent = resultCard
 local coinCorner = Instance.new("UICorner")
 coinCorner.CornerRadius = UDim.new(0, 8)
 coinCorner.Parent = coinLabel
+
+-- Equip Now button (appears after animation)
+local equipNowButton = Instance.new("TextButton")
+equipNowButton.Name = "EquipNowButton"
+equipNowButton.Size = UDim2.new(0.75, 0, 0, 34)
+equipNowButton.Position = UDim2.new(0.5, 0, 0, 408)
+equipNowButton.AnchorPoint = Vector2.new(0.5, 0)
+equipNowButton.BackgroundColor3 = Color3.fromRGB(70, 10, 150)
+equipNowButton.BorderSizePixel = 0
+equipNowButton.Font = Enum.Font.GothamBold
+equipNowButton.TextSize = 14
+equipNowButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+equipNowButton.Text = "🎒 EQUIP NOW"
+equipNowButton.Visible = false
+equipNowButton.ZIndex = 17
+equipNowButton.Parent = resultCard
+
+local equipNowCorner = Instance.new("UICorner")
+equipNowCorner.CornerRadius = UDim.new(0, 8)
+equipNowCorner.Parent = equipNowButton
+
+local equipNowStroke = Instance.new("UIStroke")
+equipNowStroke.Color = Color3.fromRGB(160, 80, 255)
+equipNowStroke.Thickness = 2
+equipNowStroke.Parent = equipNowButton
+
+local equipNowGradient = Instance.new("UIGradient")
+equipNowGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(130, 30, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 5, 140)),
+})
+equipNowGradient.Rotation = 90
+equipNowGradient.Parent = equipNowButton
 
 -- ============================================================
 -- MAIN ROLL BUTTON & AUTO-ROLL (Bottom Center)
@@ -535,7 +568,7 @@ local function playRollAnimation(item)
 	-- Animate card entrance
 	resultCard.Position = UDim2.fromScale(0.5, 1.5) -- start below screen
 	resultCard.Visible = true
-	resultCard.Size = UDim2.fromOffset(320, 420)
+	resultCard.Size = UDim2.fromOffset(320, 460)
 	
 	if isEpicPlus then
 		auraImage.Visible = true
@@ -597,19 +630,67 @@ local function playRollAnimation(item)
 		task.spawn(function()
 			for _ = 1, 3 do
 				TweenService:Create(resultCard, TweenInfo.new(0.2), {
-					Size = UDim2.fromOffset(330, 430)
+					Size = UDim2.fromOffset(330, 470)
 				}):Play()
 				task.wait(0.2)
 				TweenService:Create(resultCard, TweenInfo.new(0.2), {
-					Size = UDim2.fromOffset(320, 420)
+					Size = UDim2.fromOffset(320, 460)
 				}):Play()
 				task.wait(0.2)
 			end
 		end)
 	end
 
+	-- Show Equip Now button
+	equipNowButton.Visible = true
+	equipNowButton.BackgroundTransparency = 1
+	equipNowStroke.Transparency = 1
+	TweenService:Create(equipNowButton, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		BackgroundTransparency = 0,
+	}):Play()
+	TweenService:Create(equipNowStroke, TweenInfo.new(0.4), {
+		Transparency = 0,
+	}):Play()
+
+	-- Wire up the Equip Now button
+	local equipConn
+	equipConn = equipNowButton.MouseButton1Click:Connect(function()
+		if equipConn then equipConn:Disconnect() end
+		-- Close the result card immediately
+		isAnimating = false
+		equipNowButton.Visible = false
+		TweenService:Create(resultCard, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+			Position = UDim2.fromScale(0.5, -0.5)
+		}):Play()
+		TweenService:Create(overlay, TweenInfo.new(0.3), {
+			BackgroundTransparency = 1
+		}):Play()
+		task.delay(0.35, function()
+			resultCard.Visible = false
+			overlay.Visible = false
+			auraImage.Visible = false
+			for _, child in ipairs(reelFrame:GetChildren()) do child:Destroy() end
+			-- Re-enable roll button
+			mainRollButton.Text = "🎲 ROLL"
+			mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+			mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
+			mainRollGradient.Enabled = true
+		end)
+		-- Open inventory to the correct slot
+		task.delay(0.2, function()
+			if _G.InventoryController then
+				_G.InventoryController.OpenToSlot(item.slot)
+			else
+				local lookbookScreen = player.PlayerGui:FindFirstChild("LookbookScreen")
+				if lookbookScreen then
+					lookbookScreen.Enabled = true
+				end
+			end
+		end)
+	end)
+
 	-- 4. Wait then fade out
-	task.wait(isEpicPlus and 4 or 3)
+	task.wait(isEpicPlus and 4.5 or 3.5)
 
 	-- Fade out
 	TweenService:Create(overlay, TweenInfo.new(0.5), {
@@ -625,6 +706,7 @@ local function playRollAnimation(item)
 	resultCard.Visible = false
 	overlay.Visible = false
 	auraImage.Visible = false
+	equipNowButton.Visible = false
 
 	-- Clean up reel items
 	for _, child in ipairs(reelFrame:GetChildren()) do
