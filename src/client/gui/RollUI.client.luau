@@ -51,7 +51,11 @@ overlay.Parent = rollScreen
 -- Spinning reel container
 local reelContainer = Instance.new("Frame")
 reelContainer.Name = "ReelContainer"
-reelContainer.Size = UDim2.fromOffset(300, 80)
+reelContainer.Size = UDim2.new(0.7, 0, 0.1, 0)
+local reelConst = Instance.new("UISizeConstraint")
+reelConst.MinSize = Vector2.new(0, 0)
+reelConst.MaxSize = Vector2.new(400, 100)
+reelConst.Parent = reelContainer
 reelContainer.Position = UDim2.fromScale(0.5, 0.4)
 reelContainer.AnchorPoint = Vector2.new(0.5, 0.5)
 reelContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -95,7 +99,11 @@ auraImage.Parent = rollScreen
 -- Result card
 local resultCard = Instance.new("Frame")
 resultCard.Name = "ResultCard"
-resultCard.Size = UDim2.fromOffset(320, 460)
+resultCard.Size = UDim2.fromScale(0.7, 0.6)
+local cardConst = Instance.new("UISizeConstraint")
+cardConst.MinSize = Vector2.new(0, 0)
+cardConst.MaxSize = Vector2.new(450, 600)
+cardConst.Parent = resultCard
 resultCard.Position = UDim2.fromScale(0.5, 0.5)
 resultCard.AnchorPoint = Vector2.new(0.5, 0.5)
 resultCard.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
@@ -116,7 +124,7 @@ resultStroke.Parent = resultCard
 -- Gradient glow at top of card
 local glowFrame = Instance.new("Frame")
 glowFrame.Name = "Glow"
-glowFrame.Size = UDim2.new(1, 0, 0, 120)
+glowFrame.Size = UDim2.new(1, 0, 0.25, 0)
 glowFrame.Position = UDim2.fromScale(0, 0)
 glowFrame.BackgroundColor3 = Color3.fromRGB(139, 0, 255)
 glowFrame.BorderSizePixel = 0
@@ -138,8 +146,11 @@ glowGradient.Parent = glowFrame
 -- Item icon placeholder
 local iconFrame = Instance.new("Frame")
 iconFrame.Name = "IconFrame"
-iconFrame.Size = UDim2.fromOffset(150, 150)
-iconFrame.Position = UDim2.new(0.5, 0, 0, 40)
+iconFrame.Size = UDim2.fromScale(0.4, 0.4)
+local iconAspect = Instance.new("UIAspectRatioConstraint")
+iconAspect.AspectRatio = 1
+iconAspect.Parent = iconFrame
+iconFrame.Position = UDim2.new(0.5, 0, 0.08, 0)
 iconFrame.AnchorPoint = Vector2.new(0.5, 0)
 iconFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
 iconFrame.BorderSizePixel = 0
@@ -162,8 +173,8 @@ iconImage.Parent = iconFrame
 -- Item name label
 local nameLabel = Instance.new("TextLabel")
 nameLabel.Name = "ItemName"
-nameLabel.Size = UDim2.new(0.9, 0, 0, 36)
-nameLabel.Position = UDim2.new(0.5, 0, 0, 210)
+nameLabel.Size = UDim2.new(0.9, 0, 0.08, 0)
+nameLabel.Position = UDim2.new(0.5, 0, 0.45, 0)
 nameLabel.AnchorPoint = Vector2.new(0.5, 0)
 nameLabel.BackgroundTransparency = 1
 nameLabel.Font = Enum.Font.GothamBold
@@ -176,8 +187,8 @@ nameLabel.Parent = resultCard
 -- Rarity label
 local rarityLabel = Instance.new("TextLabel")
 rarityLabel.Name = "RarityLabel"
-rarityLabel.Size = UDim2.new(0.5, 0, 0, 30)
-rarityLabel.Position = UDim2.new(0.5, 0, 0, 252)
+rarityLabel.Size = UDim2.new(0.5, 0, 0.06, 0)
+rarityLabel.Position = UDim2.new(0.5, 0, 0.55, 0)
 rarityLabel.AnchorPoint = Vector2.new(0.5, 0)
 rarityLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
 rarityLabel.BorderSizePixel = 0
@@ -195,8 +206,8 @@ rarityCorner.Parent = rarityLabel
 -- Aesthetic family label
 local aestheticLabel = Instance.new("TextLabel")
 aestheticLabel.Name = "AestheticLabel"
-aestheticLabel.Size = UDim2.new(0.8, 0, 0, 24)
-aestheticLabel.Position = UDim2.new(0.5, 0, 0, 295)
+aestheticLabel.Size = UDim2.new(0.8, 0, 0.05, 0)
+aestheticLabel.Position = UDim2.new(0.5, 0, 0.64, 0)
 aestheticLabel.AnchorPoint = Vector2.new(0.5, 0)
 aestheticLabel.BackgroundTransparency = 1
 aestheticLabel.Font = Enum.Font.Gotham
@@ -209,8 +220,8 @@ aestheticLabel.Parent = resultCard
 -- Slot label
 local slotLabel = Instance.new("TextLabel")
 slotLabel.Name = "SlotLabel"
-slotLabel.Size = UDim2.new(0.8, 0, 0, 24)
-slotLabel.Position = UDim2.new(0.5, 0, 0, 325)
+slotLabel.Size = UDim2.new(0.8, 0, 0.05, 0)
+slotLabel.Position = UDim2.new(0.5, 0, 0.70, 0)
 slotLabel.AnchorPoint = Vector2.new(0.5, 0)
 slotLabel.BackgroundTransparency = 1
 slotLabel.Font = Enum.Font.Gotham
@@ -223,8 +234,8 @@ slotLabel.Parent = resultCard
 -- Coin drop label
 local coinLabel = Instance.new("TextLabel")
 coinLabel.Name = "CoinLabel"
-coinLabel.Size = UDim2.new(0.6, 0, 0, 30)
-coinLabel.Position = UDim2.new(0.5, 0, 0, 365)
+coinLabel.Size = UDim2.new(0.6, 0, 0.06, 0)
+coinLabel.Position = UDim2.new(0.5, 0, 0.79, 0)
 coinLabel.AnchorPoint = Vector2.new(0.5, 0)
 coinLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 15)
 coinLabel.BorderSizePixel = 0
@@ -242,8 +253,8 @@ coinCorner.Parent = coinLabel
 -- Equip Now button (appears after animation)
 local equipNowButton = Instance.new("TextButton")
 equipNowButton.Name = "EquipNowButton"
-equipNowButton.Size = UDim2.new(0.75, 0, 0, 34)
-equipNowButton.Position = UDim2.new(0.5, 0, 0, 408)
+equipNowButton.Size = UDim2.new(0.75, 0, 0.07, 0)
+equipNowButton.Position = UDim2.new(0.5, 0, 0.88, 0)
 equipNowButton.AnchorPoint = Vector2.new(0.5, 0)
 equipNowButton.BackgroundColor3 = Color3.fromRGB(70, 10, 150)
 equipNowButton.BorderSizePixel = 0
@@ -277,9 +288,13 @@ equipNowGradient.Parent = equipNowButton
 -- ============================================================
 local rollButtonContainer = Instance.new("Frame")
 rollButtonContainer.Name = "RollButtonContainer"
-rollButtonContainer.Size = UDim2.fromOffset(280, 60)
+rollButtonContainer.Size = UDim2.new(0.7, 0, 0.09, 0)
+local rollContConst = Instance.new("UISizeConstraint")
+rollContConst.MinSize = Vector2.new(0, 0)
+rollContConst.MaxSize = Vector2.new(400, 80)
+rollContConst.Parent = rollButtonContainer
 rollButtonContainer.Position = UDim2.new(0.5, 0, 1, -80)
-rollButtonContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+rollButtonContainer.AnchorPoint = Vector2.new(0.5, 1)
 rollButtonContainer.BackgroundTransparency = 1
 rollButtonContainer.ZIndex = 5
 rollButtonContainer.Parent = rollScreen
@@ -301,8 +316,9 @@ glowCorner.Parent = rollGlow
 -- Main Roll Button
 local mainRollButton = Instance.new("TextButton")
 mainRollButton.Name = "MainRollButton"
-mainRollButton.Size = UDim2.fromOffset(220, 60)
-mainRollButton.Position = UDim2.new(0, 0, 0, 0)
+mainRollButton.Size = UDim2.fromScale(0.75, 1)
+mainRollButton.Position = UDim2.new(0.35, 0, 0.5, 0)
+mainRollButton.AnchorPoint = Vector2.new(0.5, 0.5)
 mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
 mainRollButton.BorderSizePixel = 0
 mainRollButton.Font = Enum.Font.GothamBold
@@ -332,8 +348,9 @@ mainRollGradient.Parent = mainRollButton
 -- Auto-Roll Button
 local autoRollButton = Instance.new("TextButton")
 autoRollButton.Name = "AutoRollButton"
-autoRollButton.Size = UDim2.fromOffset(50, 60)
-autoRollButton.Position = UDim2.new(0, 230, 0, 0)
+autoRollButton.Size = UDim2.fromScale(0.2, 1)
+autoRollButton.Position = UDim2.new(0.85, 0, 0.5, 0)
+autoRollButton.AnchorPoint = Vector2.new(0.5, 0.5)
 autoRollButton.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 autoRollButton.BorderSizePixel = 0
 autoRollButton.Font = Enum.Font.GothamBold
@@ -412,7 +429,7 @@ local function playRollAnimation(item)
 
 	-- 2. Show reel and spin
 	reelContainer.Visible = true
-	reelContainer.Size = UDim2.fromOffset(300, 80)
+	reelContainer.Size = UDim2.new(0.7, 0, 0.1, 0)
 	reelContainer.Position = UDim2.fromScale(0.5, 0.4)
 
 	-- Create reel items
@@ -568,7 +585,7 @@ local function playRollAnimation(item)
 	-- Animate card entrance
 	resultCard.Position = UDim2.fromScale(0.5, 1.5) -- start below screen
 	resultCard.Visible = true
-	resultCard.Size = UDim2.fromOffset(320, 460)
+	resultCard.Size = UDim2.fromScale(0.7, 0.6)
 	
 	if isEpicPlus then
 		auraImage.Visible = true
@@ -630,11 +647,11 @@ local function playRollAnimation(item)
 		task.spawn(function()
 			for _ = 1, 3 do
 				TweenService:Create(resultCard, TweenInfo.new(0.2), {
-					Size = UDim2.fromOffset(330, 470)
+					Size = UDim2.fromScale(0.73, 0.63)
 				}):Play()
 				task.wait(0.2)
 				TweenService:Create(resultCard, TweenInfo.new(0.2), {
-					Size = UDim2.fromOffset(320, 460)
+					Size = UDim2.fromScale(0.7, 0.6)
 				}):Play()
 				task.wait(0.2)
 			end
@@ -743,8 +760,7 @@ end
 mainRollButton.MouseEnter:Connect(function()
 	if not isAnimating then
 		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Size = UDim2.fromOffset(230, 65),
-			Position = UDim2.fromOffset(-5, -2)
+			Size = UDim2.fromScale(0.78, 1.05),
 		}):Play()
 	end
 end)
@@ -752,8 +768,7 @@ end)
 mainRollButton.MouseLeave:Connect(function()
 	if not isAnimating then
 		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Size = UDim2.fromOffset(220, 60),
-			Position = UDim2.fromOffset(0, 0)
+			Size = UDim2.fromScale(0.75, 1),
 		}):Play()
 	end
 end)
@@ -762,8 +777,7 @@ end)
 mainRollButton.MouseButton1Down:Connect(function()
 	if not isAnimating then
 		TweenService:Create(mainRollButton, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = UDim2.fromOffset(210, 55),
-			Position = UDim2.fromOffset(5, 2)
+			Size = UDim2.fromScale(0.72, 0.95),
 		}):Play()
 	end
 end)
@@ -771,8 +785,7 @@ end)
 mainRollButton.MouseButton1Up:Connect(function()
 	if not isAnimating then
 		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Size = UDim2.fromOffset(230, 65),
-			Position = UDim2.fromOffset(-5, -2)
+			Size = UDim2.fromScale(0.78, 1.05),
 		}):Play()
 	end
 end)

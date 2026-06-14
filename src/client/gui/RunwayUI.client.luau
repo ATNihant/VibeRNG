@@ -59,7 +59,11 @@ bannerText.Parent = banner
 -- Join button
 local joinButton = Instance.new("TextButton")
 joinButton.Name = "JoinButton"
-joinButton.Size = UDim2.fromOffset(200, 50)
+joinButton.Size = UDim2.new(0.15, 0, 0.06, 0)
+local joinConst = Instance.new("UISizeConstraint")
+joinConst.MinSize = Vector2.new(0, 0)
+joinConst.MaxSize = Vector2.new(250, 70)
+joinConst.Parent = joinButton
 joinButton.Position = UDim2.new(0.5, 0, 0, 75)
 joinButton.AnchorPoint = Vector2.new(0.5, 0)
 joinButton.BackgroundColor3 = Color3.fromRGB(30, 200, 80)
@@ -79,7 +83,11 @@ joinCorner.Parent = joinButton
 -- Backstage countdown
 local countdownFrame = Instance.new("Frame")
 countdownFrame.Name = "Countdown"
-countdownFrame.Size = UDim2.fromOffset(300, 120)
+countdownFrame.Size = UDim2.fromScale(0.25, 0.15)
+local countConst = Instance.new("UISizeConstraint")
+countConst.MinSize = Vector2.new(0, 0)
+countConst.MaxSize = Vector2.new(400, 150)
+countConst.Parent = countdownFrame
 countdownFrame.Position = UDim2.fromScale(0.5, 0.5)
 countdownFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 countdownFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -229,7 +237,11 @@ end
 -- Results screen
 local resultsFrame = Instance.new("Frame")
 resultsFrame.Name = "Results"
-resultsFrame.Size = UDim2.fromOffset(350, 400)
+resultsFrame.Size = UDim2.fromScale(0.3, 0.5)
+local resConst = Instance.new("UISizeConstraint")
+resConst.MinSize = Vector2.new(0, 0)
+resConst.MaxSize = Vector2.new(450, 500)
+resConst.Parent = resultsFrame
 resultsFrame.Position = UDim2.fromScale(0.5, 0.5)
 resultsFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 resultsFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
@@ -356,7 +368,11 @@ end)
 RunwayYourTurn.OnClientEvent:Connect(function()
 	-- Show a prominent "YOUR TURN" indicator
 	local yourTurnLabel = Instance.new("TextLabel")
-	yourTurnLabel.Size = UDim2.fromOffset(300, 60)
+	yourTurnLabel.Size = UDim2.fromScale(0.3, 0.1)
+	local turnConst = Instance.new("UISizeConstraint")
+	turnConst.MinSize = Vector2.new(0, 0)
+	turnConst.MaxSize = Vector2.new(400, 80)
+	turnConst.Parent = yourTurnLabel
 	yourTurnLabel.Position = UDim2.fromScale(0.5, 0.3)
 	yourTurnLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 	yourTurnLabel.BackgroundColor3 = Color3.fromRGB(255, 200, 50)
@@ -376,11 +392,11 @@ RunwayYourTurn.OnClientEvent:Connect(function()
 	task.spawn(function()
 		for _ = 1, 5 do
 			TweenService:Create(yourTurnLabel, TweenInfo.new(0.3), {
-				Size = UDim2.fromOffset(320, 65)
+				Size = UDim2.fromScale(0.32, 0.11)
 			}):Play()
 			task.wait(0.3)
 			TweenService:Create(yourTurnLabel, TweenInfo.new(0.3), {
-				Size = UDim2.fromOffset(300, 60)
+				Size = UDim2.fromScale(0.3, 0.1)
 			}):Play()
 			task.wait(0.3)
 		end

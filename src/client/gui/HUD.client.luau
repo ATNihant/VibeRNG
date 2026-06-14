@@ -31,13 +31,18 @@ local TIER_COLORS = {
 -- ============================================================
 local coinFrame = Instance.new("Frame")
 coinFrame.Name = "CoinCounter"
-coinFrame.Size = UDim2.fromOffset(180, 44)
+coinFrame.Size = UDim2.new(0.15, 0, 0, 44) -- Responsive width
 coinFrame.Position = UDim2.new(1, -10, 0, 10)
 coinFrame.AnchorPoint = Vector2.new(1, 0)
 coinFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 coinFrame.BorderSizePixel = 0
 coinFrame.ZIndex = 5
 coinFrame.Parent = hudScreen
+
+local coinSizeConst = Instance.new("UISizeConstraint")
+coinSizeConst.MinSize = Vector2.new(0, 0)
+coinSizeConst.MaxSize = Vector2.new(250, 44)
+coinSizeConst.Parent = coinFrame
 
 local coinCorner = Instance.new("UICorner")
 coinCorner.CornerRadius = UDim.new(0, 10)
@@ -76,13 +81,18 @@ coinAmount.Parent = coinFrame
 -- ============================================================
 local rollFrame = Instance.new("Frame")
 rollFrame.Name = "RollCounter"
-rollFrame.Size = UDim2.fromOffset(180, 32)
+rollFrame.Size = UDim2.new(0.15, 0, 0, 32) -- Responsive width
 rollFrame.Position = UDim2.new(1, -10, 0, 60)
 rollFrame.AnchorPoint = Vector2.new(1, 0)
 rollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 rollFrame.BorderSizePixel = 0
 rollFrame.ZIndex = 5
 rollFrame.Parent = hudScreen
+
+local rollSizeConst = Instance.new("UISizeConstraint")
+rollSizeConst.MinSize = Vector2.new(0, 0)
+rollSizeConst.MaxSize = Vector2.new(250, 32)
+rollSizeConst.Parent = rollFrame
 
 local rollCorner = Instance.new("UICorner")
 rollCorner.CornerRadius = UDim.new(0, 8)
@@ -244,12 +254,17 @@ end)
 -- ============================================================
 local inventoryBtnFrame = Instance.new("Frame")
 inventoryBtnFrame.Name = "InventoryButtonFrame"
-inventoryBtnFrame.Size = UDim2.fromOffset(168, 52)
-inventoryBtnFrame.Position = UDim2.new(0, 12, 1, -70)
-inventoryBtnFrame.AnchorPoint = Vector2.new(0, 0)
+inventoryBtnFrame.Size = UDim2.new(0.38, 0, 0, 44) -- left half of center row
+inventoryBtnFrame.Position = UDim2.new(0.5, -4, 1, -6) -- bottom center, slightly left
+inventoryBtnFrame.AnchorPoint = Vector2.new(1, 1) -- anchored to bottom-right of itself
 inventoryBtnFrame.BackgroundTransparency = 1
 inventoryBtnFrame.ZIndex = 5
 inventoryBtnFrame.Parent = hudScreen
+
+local invBtnConst = Instance.new("UISizeConstraint")
+invBtnConst.MinSize = Vector2.new(0, 0)
+invBtnConst.MaxSize = Vector2.new(200, 50)
+invBtnConst.Parent = inventoryBtnFrame
 
 -- Glow pulse background
 local invGlow = Instance.new("Frame")
@@ -268,8 +283,9 @@ invGlowCorner.Parent = invGlow
 -- Inventory button
 local inventoryButton = Instance.new("TextButton")
 inventoryButton.Name = "InventoryButton"
-inventoryButton.Size = UDim2.fromOffset(168, 52)
-inventoryButton.Position = UDim2.fromOffset(0, 0)
+inventoryButton.Size = UDim2.fromScale(1, 1) -- Fill parent frame
+inventoryButton.Position = UDim2.fromScale(0.5, 0.5)
+inventoryButton.AnchorPoint = Vector2.new(0.5, 0.5)
 inventoryButton.BackgroundColor3 = Color3.fromRGB(70, 10, 150)
 inventoryButton.BorderSizePixel = 0
 inventoryButton.Font = Enum.Font.GothamBold
@@ -314,26 +330,22 @@ end)
 -- Hover / click animations
 inventoryButton.MouseEnter:Connect(function()
 	TweenService:Create(inventoryButton, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-		Size = UDim2.fromOffset(176, 56),
-		Position = UDim2.fromOffset(-4, -2),
+		Size = UDim2.fromScale(1.05, 1.08),
 	}):Play()
 end)
 inventoryButton.MouseLeave:Connect(function()
 	TweenService:Create(inventoryButton, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-		Size = UDim2.fromOffset(168, 52),
-		Position = UDim2.fromOffset(0, 0),
+		Size = UDim2.fromScale(1, 1),
 	}):Play()
 end)
 inventoryButton.MouseButton1Down:Connect(function()
 	TweenService:Create(inventoryButton, TweenInfo.new(0.1), {
-		Size = UDim2.fromOffset(160, 48),
-		Position = UDim2.fromOffset(4, 2),
+		Size = UDim2.fromScale(0.95, 0.95),
 	}):Play()
 end)
 inventoryButton.MouseButton1Up:Connect(function()
 	TweenService:Create(inventoryButton, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-		Size = UDim2.fromOffset(176, 56),
-		Position = UDim2.fromOffset(-4, -2),
+		Size = UDim2.fromScale(1.05, 1.08),
 	}):Play()
 end)
 

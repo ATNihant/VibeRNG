@@ -44,7 +44,11 @@ local currentTab = "Head"
 -- Main container
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.fromOffset(540, 640)
+mainFrame.Size = UDim2.fromScale(0.85, 0.75)
+local mainConst = Instance.new("UISizeConstraint")
+mainConst.MinSize = Vector2.new(0, 0)
+mainConst.MaxSize = Vector2.new(700, 800)
+mainConst.Parent = mainFrame
 mainFrame.Position = UDim2.fromScale(0.5, 0.5)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(14, 14, 18)
@@ -155,54 +159,172 @@ closeButton.MouseButton1Click:Connect(function()
 end)
 
 -- ============================================================
--- EQUIPPED SUMMARY BAR
+-- SLOT DEFINITIONS (shared)
+-- ============================================================
+local SLOT_DEFS = {
+	{ name = "Head", icon = "👑" },
+	{ name = "Body", icon = "👔" },
+	{ name = "Legs", icon = "👟" },
+}
+
+local equippedSlotLabels = {}  -- slot name -> labels table for updating
+
+-- ============================================================
+-- BODY AREA (below title bar) — left sidebar + right grid
+-- ============================================================
+local bodyArea = Instance.new("Frame")
+bodyArea.Name = "BodyArea"
+bodyArea.Size = UDim2.new(1, 0, 1, -54 - 56) -- full width, minus title (54) and equipped strip (56)
+bodyArea.Position = UDim2.new(0, 0, 0, 54)
+bodyArea.BackgroundTransparency = 1
+bodyArea.ZIndex = 5
+bodyArea.Parent = mainFrame
+
+-- ============================================================
+-- LEFT SIDEBAR TABS
+-- ============================================================
+local sideBar = Instance.new("Frame")
+sideBar.Name = "SideBar"
+sideBar.Size = UDim2.new(0.28, 0, 1, 0)
+sideBar.Position = UDim2.new(0, 0, 0, 0)
+sideBar.BackgroundColor3 = Color3.fromRGB(16, 12, 26)
+sideBar.BorderSizePixel = 0
+sideBar.ZIndex = 6
+sideBar.Parent = bodyArea
+
+local sideBarStroke = Instance.new("UIStroke")
+sideBarStroke.Color = Color3.fromRGB(50, 30, 80)
+sideBarStroke.Thickness = 1
+sideBarStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+sideBarStroke.Parent = sideBar
+
+local sideLayout = Instance.new("UIListLayout")
+sideLayout.FillDirection = Enum.FillDirection.Vertical
+sideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+sideLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+sideLayout.Padding = UDim.new(0, 4)
+sideLayout.SortOrder = Enum.SortOrder.LayoutOrder
+sideLayout.Parent = sideBar
+
+local sidePad = Instance.new("UIPadding")
+sidePad.PaddingTop = UDim.new(0, 10)
+sidePad.PaddingLeft = UDim.new(0, 6)
+sidePad.PaddingRight = UDim.new(0, 6)
+sidePad.Parent = sideBar
+
+local tabButtons = {}
+
+local function createTab(name, icon, order)
+	local tab = Instance.new("TextButton")
+	tab.Name = "Tab_" .. name
+	tab.Size = UDim2.new(1, 0, 0, 36)
+	tab.BackgroundColor3 = Color3.fromRGB(28, 22, 44)
+	tab.BorderSizePixel = 0
+	tab.Font = Enum.Font.GothamBold
+	tab.TextSize = 11
+	tab.TextColor3 = Color3.fromRGB(140, 120, 180)
+	tab.Text = icon .. " " .. name:upper()
+	tab.LayoutOrder = order
+	tab.ZIndex = 7
+	tab.Parent = sideBar
+
+	local tabCornerInst = Instance.new("UICorner")
+	tabCornerInst.CornerRadius = UDim.new(0, 6)
+	tabCornerInst.Parent = tab
+
+	local tabStroke = Instance.new("UIStroke")
+	tabStroke.Color = Color3.fromRGB(60, 40, 100)
+	tabStroke.Thickness = 1
+	tabStroke.Parent = tab
+
+	-- Active indicator bar on left edge
+	local activeBar = Instance.new("Frame")
+	activeBar.Name = "ActiveBar"
+	activeBar.Size = UDim2.new(0, 3, 0.6, 0)
+	activeBar.Position = UDim2.new(0, 0, 0.2, 0)
+	activeBar.BackgroundColor3 = Color3.fromRGB(160, 80, 255)
+	activeBar.BorderSizePixel = 0
+	activeBar.Visible = false
+	activeBar.ZIndex = 8
+	local activeBarCorner = Instance.new("UICorner")
+	activeBarCorner.CornerRadius = UDim.new(1, 0)
+	activeBarCorner.Parent = activeBar
+	activeBar.Parent = tab
+
+	tabButtons[name] = { btn = tab, stroke = tabStroke, bar = activeBar }
+	return tab
+end
+
+createTab("Head", "👑", 1)
+createTab("Body", "👔", 2)
+createTab("Legs", "👟", 3)
+
+-- ============================================================
+-- RIGHT CONTENT SCROLLING GRID
+-- ============================================================
+local contentFrame = Instance.new("ScrollingFrame")
+contentFrame.Name = "ContentFrame"
+contentFrame.Size = UDim2.new(0.72, 0, 1, 0)
+contentFrame.Position = UDim2.new(0.28, 0, 0, 0)
+contentFrame.BackgroundTransparency = 1
+contentFrame.BorderSizePixel = 0
+contentFrame.ScrollBarThickness = 4
+contentFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 70, 160)
+contentFrame.ZIndex = 6
+contentFrame.CanvasSize = UDim2.fromOffset(0, 0)
+contentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+contentFrame.Parent = bodyArea
+
+local gridLayout = Instance.new("UIGridLayout")
+gridLayout.CellSize = UDim2.new(0.47, 0, 0, 160)
+gridLayout.CellPadding = UDim2.fromOffset(6, 6)
+gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+gridLayout.Parent = contentFrame
+
+local gridPadding = Instance.new("UIPadding")
+gridPadding.PaddingTop = UDim.new(0, 8)
+gridPadding.PaddingBottom = UDim.new(0, 8)
+gridPadding.PaddingLeft = UDim.new(0, 4)
+gridPadding.PaddingRight = UDim.new(0, 4)
+gridPadding.Parent = contentFrame
+
+-- ============================================================
+-- BOTTOM EQUIPPED STRIP
 -- ============================================================
 local equippedBar = Instance.new("Frame")
 equippedBar.Name = "EquippedBar"
-equippedBar.Size = UDim2.new(1, -24, 0, 72)
-equippedBar.Position = UDim2.fromOffset(12, 60)
-equippedBar.BackgroundColor3 = Color3.fromRGB(18, 14, 28)
+equippedBar.Size = UDim2.new(1, 0, 0, 56)
+equippedBar.Position = UDim2.new(0, 0, 1, -56)
+equippedBar.AnchorPoint = Vector2.new(0, 0)
+equippedBar.BackgroundColor3 = Color3.fromRGB(14, 10, 22)
 equippedBar.BorderSizePixel = 0
 equippedBar.ZIndex = 6
 equippedBar.Parent = mainFrame
 
-local equippedBarCorner = Instance.new("UICorner")
-equippedBarCorner.CornerRadius = UDim.new(0, 10)
-equippedBarCorner.Parent = equippedBar
-
 local equippedBarStroke = Instance.new("UIStroke")
 equippedBarStroke.Color = Color3.fromRGB(60, 40, 90)
 equippedBarStroke.Thickness = 1
+equippedBarStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 equippedBarStroke.Parent = equippedBar
 
-local equippedTitle = Instance.new("TextLabel")
-equippedTitle.Size = UDim2.new(0, 90, 1, 0)
-equippedTitle.Position = UDim2.fromOffset(12, 0)
-equippedTitle.BackgroundTransparency = 1
-equippedTitle.Font = Enum.Font.GothamBold
-equippedTitle.TextSize = 11
-equippedTitle.TextColor3 = Color3.fromRGB(130, 100, 180)
-equippedTitle.Text = "EQUIPPED"
-equippedTitle.TextXAlignment = Enum.TextXAlignment.Left
-equippedTitle.TextYAlignment = Enum.TextYAlignment.Center
-equippedTitle.ZIndex = 7
-equippedTitle.Parent = equippedBar
+local equippedBarLayout = Instance.new("UIListLayout")
+equippedBarLayout.FillDirection = Enum.FillDirection.Horizontal
+equippedBarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+equippedBarLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+equippedBarLayout.Padding = UDim.new(0.02, 0)
+equippedBarLayout.Parent = equippedBar
 
--- 3 slot cells in the equipped bar
-local SLOT_DEFS = {
-	{ name = "Head", icon = "👑", xOffset = 95 },
-	{ name = "Body", icon = "👔", xOffset = 230 },
-	{ name = "Legs", icon = "👟", xOffset = 365 },
-}
-
-local equippedSlotLabels = {}  -- slot name -> TextLabel for updating
+local equippedBarPad = Instance.new("UIPadding")
+equippedBarPad.PaddingLeft = UDim.new(0, 8)
+equippedBarPad.PaddingRight = UDim.new(0, 8)
+equippedBarPad.Parent = equippedBar
 
 for _, slotDef in ipairs(SLOT_DEFS) do
 	local cell = Instance.new("Frame")
 	cell.Name = "EquippedSlot_" .. slotDef.name
-	cell.Size = UDim2.fromOffset(128, 56)
-	cell.Position = UDim2.fromOffset(slotDef.xOffset, 8)
-	cell.BackgroundColor3 = Color3.fromRGB(26, 20, 42)
+	cell.Size = UDim2.new(0.31, 0, 0, 44)
+	cell.BackgroundColor3 = Color3.fromRGB(22, 16, 36)
 	cell.BorderSizePixel = 0
 	cell.ZIndex = 7
 	cell.Parent = equippedBar
@@ -217,11 +339,11 @@ for _, slotDef in ipairs(SLOT_DEFS) do
 	cellStroke.Parent = cell
 
 	local slotIcon = Instance.new("TextLabel")
-	slotIcon.Size = UDim2.fromOffset(28, 56)
-	slotIcon.Position = UDim2.fromOffset(6, 0)
+	slotIcon.Size = UDim2.fromOffset(24, 44)
+	slotIcon.Position = UDim2.fromOffset(5, 0)
 	slotIcon.BackgroundTransparency = 1
 	slotIcon.Font = Enum.Font.GothamBold
-	slotIcon.TextSize = 18
+	slotIcon.TextSize = 14
 	slotIcon.TextColor3 = Color3.fromRGB(180, 150, 220)
 	slotIcon.Text = slotDef.icon
 	slotIcon.ZIndex = 8
@@ -229,11 +351,11 @@ for _, slotDef in ipairs(SLOT_DEFS) do
 
 	local itemLabel = Instance.new("TextLabel")
 	itemLabel.Name = "ItemLabel"
-	itemLabel.Size = UDim2.new(1, -38, 0.5, 0)
-	itemLabel.Position = UDim2.fromOffset(36, 6)
+	itemLabel.Size = UDim2.new(1, -32, 0.5, 0)
+	itemLabel.Position = UDim2.fromOffset(30, 4)
 	itemLabel.BackgroundTransparency = 1
 	itemLabel.Font = Enum.Font.GothamBold
-	itemLabel.TextSize = 10
+	itemLabel.TextSize = 9
 	itemLabel.TextColor3 = Color3.fromRGB(220, 210, 240)
 	itemLabel.Text = "None"
 	itemLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -243,11 +365,11 @@ for _, slotDef in ipairs(SLOT_DEFS) do
 
 	local rarityLabel = Instance.new("TextLabel")
 	rarityLabel.Name = "RarityLabel"
-	rarityLabel.Size = UDim2.new(1, -38, 0.5, 0)
-	rarityLabel.Position = UDim2.fromOffset(36, 28)
+	rarityLabel.Size = UDim2.new(1, -32, 0.5, 0)
+	rarityLabel.Position = UDim2.fromOffset(30, 23)
 	rarityLabel.BackgroundTransparency = 1
 	rarityLabel.Font = Enum.Font.Gotham
-	rarityLabel.TextSize = 9
+	rarityLabel.TextSize = 8
 	rarityLabel.TextColor3 = Color3.fromRGB(100, 80, 140)
 	rarityLabel.Text = "Empty"
 	rarityLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -256,83 +378,6 @@ for _, slotDef in ipairs(SLOT_DEFS) do
 
 	equippedSlotLabels[slotDef.name] = { cell = cell, itemLabel = itemLabel, rarityLabel = rarityLabel, stroke = cellStroke }
 end
-
--- ============================================================
--- TAB BAR
--- ============================================================
-local tabBar = Instance.new("Frame")
-tabBar.Name = "TabBar"
-tabBar.Size = UDim2.new(1, -20, 0, 40)
-tabBar.Position = UDim2.fromOffset(10, 138)
-tabBar.BackgroundTransparency = 1
-tabBar.ZIndex = 6
-tabBar.Parent = mainFrame
-
-local tabLayout = Instance.new("UIListLayout")
-tabLayout.FillDirection = Enum.FillDirection.Horizontal
-tabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-tabLayout.Padding = UDim.new(0, 8)
-tabLayout.Parent = tabBar
-
-local tabButtons = {}
-
-local function createTab(name, icon)
-	local tab = Instance.new("TextButton")
-	tab.Name = "Tab_" .. name
-	tab.Size = UDim2.fromOffset(148, 36)
-	tab.BackgroundColor3 = Color3.fromRGB(28, 22, 44)
-	tab.BorderSizePixel = 0
-	tab.Font = Enum.Font.GothamBold
-	tab.TextSize = 14
-	tab.TextColor3 = Color3.fromRGB(140, 120, 180)
-	tab.Text = icon .. "  " .. name:upper()
-	tab.ZIndex = 7
-	tab.Parent = tabBar
-
-	local tabCornerInst = Instance.new("UICorner")
-	tabCornerInst.CornerRadius = UDim.new(0, 9)
-	tabCornerInst.Parent = tab
-
-	local tabStroke = Instance.new("UIStroke")
-	tabStroke.Color = Color3.fromRGB(60, 40, 100)
-	tabStroke.Thickness = 1
-	tabStroke.Parent = tab
-
-	tabButtons[name] = { btn = tab, stroke = tabStroke }
-	return tab
-end
-
-createTab("Head", "👑")
-createTab("Body", "👔")
-createTab("Legs", "👟")
-
--- ============================================================
--- CONTENT SCROLLING GRID
--- ============================================================
-local contentFrame = Instance.new("ScrollingFrame")
-contentFrame.Name = "ContentFrame"
-contentFrame.Size = UDim2.new(1, -20, 1, -186)
-contentFrame.Position = UDim2.fromOffset(10, 184)
-contentFrame.BackgroundTransparency = 1
-contentFrame.BorderSizePixel = 0
-contentFrame.ScrollBarThickness = 4
-contentFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 70, 160)
-contentFrame.ZIndex = 6
-contentFrame.CanvasSize = UDim2.fromOffset(0, 0)
-contentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-contentFrame.Parent = mainFrame
-
-local gridLayout = Instance.new("UIGridLayout")
-gridLayout.CellSize = UDim2.fromOffset(118, 168)
-gridLayout.CellPadding = UDim2.fromOffset(8, 8)
-gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-gridLayout.Parent = contentFrame
-
-local gridPadding = Instance.new("UIPadding")
-gridPadding.PaddingTop = UDim.new(0, 6)
-gridPadding.PaddingBottom = UDim.new(0, 10)
-gridPadding.Parent = contentFrame
 
 -- ============================================================
 -- ITEM CARD CREATION
@@ -621,11 +666,13 @@ local function setTab(tabName)
 			tabData.btn.TextColor3 = Color3.fromRGB(255, 255, 255)
 			tabData.stroke.Color = Color3.fromRGB(160, 80, 255)
 			tabData.stroke.Thickness = 2
+			if tabData.bar then tabData.bar.Visible = true end
 		else
 			tabData.btn.BackgroundColor3 = Color3.fromRGB(28, 22, 44)
 			tabData.btn.TextColor3 = Color3.fromRGB(140, 120, 180)
 			tabData.stroke.Color = Color3.fromRGB(60, 40, 100)
 			tabData.stroke.Thickness = 1
+			if tabData.bar then tabData.bar.Visible = false end
 		end
 	end
 
@@ -659,10 +706,10 @@ end
 -- OPEN / CLOSE ANIMATION
 -- ============================================================
 local function animateOpen()
-	mainFrame.Size = UDim2.fromOffset(540 * 0.85, 640 * 0.85)
+	mainFrame.Size = UDim2.fromScale(0.75, 0.7)
 	mainFrame.BackgroundTransparency = 0.8
 	TweenService:Create(mainFrame, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-		Size = UDim2.fromOffset(540, 640),
+		Size = UDim2.fromScale(0.85, 0.75),
 		BackgroundTransparency = 0,
 	}):Play()
 end

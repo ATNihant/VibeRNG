@@ -39,7 +39,11 @@ local localPlayerData = nil
 -- Main container
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.fromOffset(420, 520)
+mainFrame.Size = UDim2.fromScale(0.8, 0.7)
+local mainConst = Instance.new("UISizeConstraint")
+mainConst.MinSize = Vector2.new(0, 0)
+mainConst.MaxSize = Vector2.new(600, 700)
+mainConst.Parent = mainFrame
 mainFrame.Position = UDim2.fromScale(0.5, 0.5)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
@@ -258,17 +262,34 @@ local hudScreenRef = playerGui:WaitForChild("HUDScreen")
 
 local shopOpenButton = Instance.new("TextButton")
 shopOpenButton.Name = "OpenShop"
-shopOpenButton.Size = UDim2.fromOffset(50, 50)
-shopOpenButton.Position = UDim2.new(1, -10, 1, -10)
-shopOpenButton.AnchorPoint = Vector2.new(1, 1)
+shopOpenButton.Size = UDim2.new(0.38, 0, 0, 44) -- right half of center row
+local shopOpenConst = Instance.new("UISizeConstraint")
+shopOpenConst.MinSize = Vector2.new(44, 44)
+shopOpenConst.MaxSize = Vector2.new(200, 50)
+shopOpenConst.Parent = shopOpenButton
+shopOpenButton.Position = UDim2.new(0.5, 4, 1, -6) -- bottom center, slightly right
+shopOpenButton.AnchorPoint = Vector2.new(0, 1)  -- anchored to bottom-left of itself
 shopOpenButton.BackgroundColor3 = Color3.fromRGB(139, 0, 255)
 shopOpenButton.BorderSizePixel = 0
 shopOpenButton.Font = Enum.Font.GothamBold
-shopOpenButton.TextSize = 24
+shopOpenButton.TextSize = 18
 shopOpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-shopOpenButton.Text = "🛍️"
+shopOpenButton.Text = "🛍️  SHOP"
 shopOpenButton.ZIndex = 5
 shopOpenButton.Parent = hudScreenRef
+
+local shopOpenGradient = Instance.new("UIGradient")
+shopOpenGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(180, 30, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 0, 200)),
+})
+shopOpenGradient.Rotation = 90
+shopOpenGradient.Parent = shopOpenButton
+
+local shopOpenStroke = Instance.new("UIStroke")
+shopOpenStroke.Color = Color3.fromRGB(200, 100, 255)
+shopOpenStroke.Thickness = 2
+shopOpenStroke.Parent = shopOpenButton
 
 local shopOpenCorner = Instance.new("UICorner")
 shopOpenCorner.CornerRadius = UDim.new(0, 12)
