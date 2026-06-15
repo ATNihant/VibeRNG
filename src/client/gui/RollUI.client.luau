@@ -34,6 +34,9 @@ local RARITY_BG_COLORS = {
 	Mythic    = Color3.fromRGB(55, 10, 20),
 }
 
+-- Rarities that ALWAYS show the full popup even when hide mode is on
+local ALWAYS_SHOW = { Epic = true, Legendary = true, Mythic = true }
+
 -- ============================================================
 -- BUILD UI ELEMENTS (programmatic)
 -- ============================================================
@@ -51,11 +54,7 @@ overlay.Parent = rollScreen
 -- Spinning reel container
 local reelContainer = Instance.new("Frame")
 reelContainer.Name = "ReelContainer"
-reelContainer.Size = UDim2.new(0.7, 0, 0.1, 0)
-local reelConst = Instance.new("UISizeConstraint")
-reelConst.MinSize = Vector2.new(0, 0)
-reelConst.MaxSize = Vector2.new(400, 100)
-reelConst.Parent = reelContainer
+reelContainer.Size = UDim2.fromOffset(300, 80)
 reelContainer.Position = UDim2.fromScale(0.5, 0.4)
 reelContainer.AnchorPoint = Vector2.new(0.5, 0.5)
 reelContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -99,11 +98,7 @@ auraImage.Parent = rollScreen
 -- Result card
 local resultCard = Instance.new("Frame")
 resultCard.Name = "ResultCard"
-resultCard.Size = UDim2.fromScale(0.7, 0.6)
-local cardConst = Instance.new("UISizeConstraint")
-cardConst.MinSize = Vector2.new(0, 0)
-cardConst.MaxSize = Vector2.new(450, 600)
-cardConst.Parent = resultCard
+resultCard.Size = UDim2.fromOffset(320, 460)
 resultCard.Position = UDim2.fromScale(0.5, 0.5)
 resultCard.AnchorPoint = Vector2.new(0.5, 0.5)
 resultCard.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
@@ -124,7 +119,7 @@ resultStroke.Parent = resultCard
 -- Gradient glow at top of card
 local glowFrame = Instance.new("Frame")
 glowFrame.Name = "Glow"
-glowFrame.Size = UDim2.new(1, 0, 0.25, 0)
+glowFrame.Size = UDim2.new(1, 0, 0, 120)
 glowFrame.Position = UDim2.fromScale(0, 0)
 glowFrame.BackgroundColor3 = Color3.fromRGB(139, 0, 255)
 glowFrame.BorderSizePixel = 0
@@ -146,11 +141,8 @@ glowGradient.Parent = glowFrame
 -- Item icon placeholder
 local iconFrame = Instance.new("Frame")
 iconFrame.Name = "IconFrame"
-iconFrame.Size = UDim2.fromScale(0.4, 0.4)
-local iconAspect = Instance.new("UIAspectRatioConstraint")
-iconAspect.AspectRatio = 1
-iconAspect.Parent = iconFrame
-iconFrame.Position = UDim2.new(0.5, 0, 0.08, 0)
+iconFrame.Size = UDim2.fromOffset(150, 150)
+iconFrame.Position = UDim2.new(0.5, 0, 0, 40)
 iconFrame.AnchorPoint = Vector2.new(0.5, 0)
 iconFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
 iconFrame.BorderSizePixel = 0
@@ -173,8 +165,8 @@ iconImage.Parent = iconFrame
 -- Item name label
 local nameLabel = Instance.new("TextLabel")
 nameLabel.Name = "ItemName"
-nameLabel.Size = UDim2.new(0.9, 0, 0.08, 0)
-nameLabel.Position = UDim2.new(0.5, 0, 0.45, 0)
+nameLabel.Size = UDim2.new(0.9, 0, 0, 36)
+nameLabel.Position = UDim2.new(0.5, 0, 0, 210)
 nameLabel.AnchorPoint = Vector2.new(0.5, 0)
 nameLabel.BackgroundTransparency = 1
 nameLabel.Font = Enum.Font.GothamBold
@@ -187,8 +179,8 @@ nameLabel.Parent = resultCard
 -- Rarity label
 local rarityLabel = Instance.new("TextLabel")
 rarityLabel.Name = "RarityLabel"
-rarityLabel.Size = UDim2.new(0.5, 0, 0.06, 0)
-rarityLabel.Position = UDim2.new(0.5, 0, 0.55, 0)
+rarityLabel.Size = UDim2.new(0.5, 0, 0, 30)
+rarityLabel.Position = UDim2.new(0.5, 0, 0, 252)
 rarityLabel.AnchorPoint = Vector2.new(0.5, 0)
 rarityLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
 rarityLabel.BorderSizePixel = 0
@@ -206,8 +198,8 @@ rarityCorner.Parent = rarityLabel
 -- Aesthetic family label
 local aestheticLabel = Instance.new("TextLabel")
 aestheticLabel.Name = "AestheticLabel"
-aestheticLabel.Size = UDim2.new(0.8, 0, 0.05, 0)
-aestheticLabel.Position = UDim2.new(0.5, 0, 0.64, 0)
+aestheticLabel.Size = UDim2.new(0.8, 0, 0, 24)
+aestheticLabel.Position = UDim2.new(0.5, 0, 0, 295)
 aestheticLabel.AnchorPoint = Vector2.new(0.5, 0)
 aestheticLabel.BackgroundTransparency = 1
 aestheticLabel.Font = Enum.Font.Gotham
@@ -220,8 +212,8 @@ aestheticLabel.Parent = resultCard
 -- Slot label
 local slotLabel = Instance.new("TextLabel")
 slotLabel.Name = "SlotLabel"
-slotLabel.Size = UDim2.new(0.8, 0, 0.05, 0)
-slotLabel.Position = UDim2.new(0.5, 0, 0.70, 0)
+slotLabel.Size = UDim2.new(0.8, 0, 0, 24)
+slotLabel.Position = UDim2.new(0.5, 0, 0, 325)
 slotLabel.AnchorPoint = Vector2.new(0.5, 0)
 slotLabel.BackgroundTransparency = 1
 slotLabel.Font = Enum.Font.Gotham
@@ -234,8 +226,8 @@ slotLabel.Parent = resultCard
 -- Coin drop label
 local coinLabel = Instance.new("TextLabel")
 coinLabel.Name = "CoinLabel"
-coinLabel.Size = UDim2.new(0.6, 0, 0.06, 0)
-coinLabel.Position = UDim2.new(0.5, 0, 0.79, 0)
+coinLabel.Size = UDim2.new(0.6, 0, 0, 30)
+coinLabel.Position = UDim2.new(0.5, 0, 0, 365)
 coinLabel.AnchorPoint = Vector2.new(0.5, 0)
 coinLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 15)
 coinLabel.BorderSizePixel = 0
@@ -253,8 +245,8 @@ coinCorner.Parent = coinLabel
 -- Equip Now button (appears after animation)
 local equipNowButton = Instance.new("TextButton")
 equipNowButton.Name = "EquipNowButton"
-equipNowButton.Size = UDim2.new(0.75, 0, 0.07, 0)
-equipNowButton.Position = UDim2.new(0.5, 0, 0.88, 0)
+equipNowButton.Size = UDim2.new(0.75, 0, 0, 34)
+equipNowButton.Position = UDim2.new(0.5, 0, 0, 408)
 equipNowButton.AnchorPoint = Vector2.new(0.5, 0)
 equipNowButton.BackgroundColor3 = Color3.fromRGB(70, 10, 150)
 equipNowButton.BorderSizePixel = 0
@@ -275,6 +267,67 @@ equipNowStroke.Color = Color3.fromRGB(160, 80, 255)
 equipNowStroke.Thickness = 2
 equipNowStroke.Parent = equipNowButton
 
+-- ============================================================
+-- TOAST NOTIFICATION (shown for hidden rolls)
+-- ============================================================
+local toastFrame = Instance.new("Frame")
+toastFrame.Name = "RollToast"
+toastFrame.Size = UDim2.fromOffset(260, 44)
+toastFrame.Position = UDim2.new(0.5, 0, 0, -60) -- starts off-screen top
+toastFrame.AnchorPoint = Vector2.new(0.5, 0)
+toastFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 28)
+toastFrame.BorderSizePixel = 0
+toastFrame.Visible = false
+toastFrame.ZIndex = 20
+toastFrame.Parent = rollScreen
+
+local toastCorner = Instance.new("UICorner")
+toastCorner.CornerRadius = UDim.new(0, 10)
+toastCorner.Parent = toastFrame
+
+local toastStroke = Instance.new("UIStroke")
+toastStroke.Color = Color3.fromRGB(80, 80, 100)
+toastStroke.Thickness = 1.5
+toastStroke.Parent = toastFrame
+
+local toastLabel = Instance.new("TextLabel")
+toastLabel.Name = "ToastLabel"
+toastLabel.Size = UDim2.fromScale(1, 1)
+toastLabel.BackgroundTransparency = 1
+toastLabel.Font = Enum.Font.GothamBold
+toastLabel.TextSize = 14
+toastLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+toastLabel.Text = ""
+toastLabel.ZIndex = 21
+toastLabel.Parent = toastFrame
+
+local toastActive = false
+local function showToast(item)
+	toastStroke.Color = RARITY_COLORS[item.rarity] or Color3.fromRGB(80, 80, 100)
+	toastLabel.Text = "Got: " .. item.name .. " (" .. item.rarity .. ")"
+	toastFrame.Visible = true
+	toastFrame.BackgroundTransparency = 0
+	toastLabel.TextTransparency = 0
+	toastStroke.Transparency = 0
+
+	-- Slide in from top
+	toastFrame.Position = UDim2.new(0.5, 0, 0, -50)
+	TweenService:Create(toastFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0.5, 0, 0, 16)
+	}):Play()
+
+	task.delay(2.2, function()
+		-- Fade + slide out
+		TweenService:Create(toastFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+			Position = UDim2.new(0.5, 0, 0, -50),
+			BackgroundTransparency = 1,
+		}):Play()
+		TweenService:Create(toastLabel, TweenInfo.new(0.3), { TextTransparency = 1 }):Play()
+		TweenService:Create(toastStroke, TweenInfo.new(0.3), { Transparency = 1 }):Play()
+		task.delay(0.35, function() toastFrame.Visible = false end)
+	end)
+end
+
 local equipNowGradient = Instance.new("UIGradient")
 equipNowGradient.Color = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(130, 30, 255)),
@@ -284,90 +337,225 @@ equipNowGradient.Rotation = 90
 equipNowGradient.Parent = equipNowButton
 
 -- ============================================================
--- MAIN ROLL BUTTON & AUTO-ROLL (Bottom Center)
+-- BOTTOM BUTTON BAR (Gen-Z pill layout)
 -- ============================================================
+
+-- Frosted glass backdrop
+local barBg = Instance.new("Frame")
+barBg.Name = "BarBg"
+barBg.Size = UDim2.fromOffset(370, 76)
+barBg.Position = UDim2.new(0.5, 0, 1, -54)
+barBg.AnchorPoint = Vector2.new(0.5, 1)
+barBg.BackgroundColor3 = Color3.fromRGB(10, 10, 18)
+barBg.BackgroundTransparency = 0.25
+barBg.BorderSizePixel = 0
+barBg.ZIndex = 4
+barBg.Parent = rollScreen
+
+local barBgCorner = Instance.new("UICorner")
+barBgCorner.CornerRadius = UDim.new(1, 0)
+barBgCorner.Parent = barBg
+
+local barBgStroke = Instance.new("UIStroke")
+barBgStroke.Color = Color3.fromRGB(120, 80, 255)
+barBgStroke.Transparency = 0.4
+barBgStroke.Thickness = 1.5
+barBgStroke.Parent = barBg
+
+-- Shimmer the bar border
+task.spawn(function()
+	while true do
+		TweenService:Create(barBgStroke, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Color = Color3.fromRGB(255, 80, 200)
+		}):Play()
+		task.wait(1.8)
+		TweenService:Create(barBgStroke, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Color = Color3.fromRGB(80, 160, 255)
+		}):Play()
+		task.wait(1.8)
+	end
+end)
+
+-- Invisible container for button layout (same var name used below)
 local rollButtonContainer = Instance.new("Frame")
 rollButtonContainer.Name = "RollButtonContainer"
-rollButtonContainer.Size = UDim2.new(0.7, 0, 0.09, 0)
-local rollContConst = Instance.new("UISizeConstraint")
-rollContConst.MinSize = Vector2.new(0, 0)
-rollContConst.MaxSize = Vector2.new(400, 80)
-rollContConst.Parent = rollButtonContainer
-rollButtonContainer.Position = UDim2.new(0.5, 0, 1, -80)
-rollButtonContainer.AnchorPoint = Vector2.new(0.5, 1)
+rollButtonContainer.Size = UDim2.fromOffset(356, 60)
+rollButtonContainer.Position = UDim2.new(0.5, 0, 0.5, 0)
+rollButtonContainer.AnchorPoint = Vector2.new(0.5, 0.5)
 rollButtonContainer.BackgroundTransparency = 1
 rollButtonContainer.ZIndex = 5
-rollButtonContainer.Parent = rollScreen
+rollButtonContainer.Parent = barBg
 
--- Glowing Pulse Background
+-- Faint glow under the ROLL button (kept for compat)
 local rollGlow = Instance.new("Frame")
-rollGlow.Size = UDim2.fromScale(1, 1)
-rollGlow.Position = UDim2.fromScale(0.5, 0.5)
-rollGlow.AnchorPoint = Vector2.new(0.5, 0.5)
-rollGlow.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-rollGlow.BackgroundTransparency = 0.2
+rollGlow.Name = "RollGlow"
+rollGlow.Size = UDim2.fromOffset(230, 60)
+rollGlow.Position = UDim2.fromOffset(0, 0)
+rollGlow.BackgroundColor3 = Color3.fromRGB(200, 60, 255)
+rollGlow.BackgroundTransparency = 0.85
+rollGlow.BorderSizePixel = 0
 rollGlow.ZIndex = 4
 rollGlow.Parent = rollButtonContainer
+Instance.new("UICorner", rollGlow).CornerRadius = UDim.new(1, 0)
 
-local glowCorner = Instance.new("UICorner")
-glowCorner.CornerRadius = UDim.new(0, 12)
-glowCorner.Parent = rollGlow
+-- Pulse glow
+task.spawn(function()
+	while true do
+		TweenService:Create(rollGlow, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Size = UDim2.fromOffset(250, 70),
+			Position = UDim2.fromOffset(-10, -5),
+			BackgroundTransparency = 0.7,
+		}):Play()
+		task.wait(1.2)
+		TweenService:Create(rollGlow, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Size = UDim2.fromOffset(230, 60),
+			Position = UDim2.fromOffset(0, 0),
+			BackgroundTransparency = 0.85,
+		}):Play()
+		task.wait(1.2)
+	end
+end)
 
--- Main Roll Button
+-- ✨ MAIN ROLL BUTTON — chunky iridescent pill
 local mainRollButton = Instance.new("TextButton")
 mainRollButton.Name = "MainRollButton"
-mainRollButton.Size = UDim2.fromScale(0.75, 1)
-mainRollButton.Position = UDim2.new(0.35, 0, 0.5, 0)
-mainRollButton.AnchorPoint = Vector2.new(0.5, 0.5)
-mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+mainRollButton.Size = UDim2.fromOffset(230, 60)
+mainRollButton.Position = UDim2.fromOffset(0, 0)
+mainRollButton.BackgroundColor3 = Color3.fromRGB(180, 40, 255)
 mainRollButton.BorderSizePixel = 0
 mainRollButton.Font = Enum.Font.GothamBold
-mainRollButton.TextSize = 24
+mainRollButton.TextSize = 22
 mainRollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-mainRollButton.Text = "🎲 ROLL"
+mainRollButton.Text = "✨ ROLL IT"
 mainRollButton.ZIndex = 5
 mainRollButton.Parent = rollButtonContainer
 
 local mainRollCorner = Instance.new("UICorner")
-mainRollCorner.CornerRadius = UDim.new(0, 12)
+mainRollCorner.CornerRadius = UDim.new(1, 0) -- full pill
 mainRollCorner.Parent = mainRollButton
 
 local mainRollStroke = Instance.new("UIStroke")
-mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
+mainRollStroke.Color = Color3.fromRGB(255, 180, 255)
 mainRollStroke.Thickness = 2
 mainRollStroke.Parent = mainRollButton
 
 local mainRollGradient = Instance.new("UIGradient")
 mainRollGradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 200)),
+	ColorSequenceKeypoint.new(0,   Color3.fromRGB(255, 60, 180)),  -- hot pink
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160, 40, 255)),  -- purple
+	ColorSequenceKeypoint.new(1,   Color3.fromRGB(80, 180, 255)),  -- cyan
 })
-mainRollGradient.Rotation = 90
+mainRollGradient.Rotation = 135
 mainRollGradient.Parent = mainRollButton
 
--- Auto-Roll Button
+-- Rainbow shimmer loop on ROLL button
+task.spawn(function()
+	while true do
+		TweenService:Create(mainRollGradient, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Rotation = 225
+		}):Play()
+		task.wait(2)
+		TweenService:Create(mainRollGradient, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Rotation = 135
+		}):Play()
+		task.wait(2)
+	end
+end)
+
+-- 🔁 AUTO button
 local autoRollButton = Instance.new("TextButton")
 autoRollButton.Name = "AutoRollButton"
-autoRollButton.Size = UDim2.fromScale(0.2, 1)
-autoRollButton.Position = UDim2.new(0.85, 0, 0.5, 0)
-autoRollButton.AnchorPoint = Vector2.new(0.5, 0.5)
-autoRollButton.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+autoRollButton.Size = UDim2.fromOffset(56, 60)
+autoRollButton.Position = UDim2.fromOffset(238, 0)
+autoRollButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 autoRollButton.BorderSizePixel = 0
 autoRollButton.Font = Enum.Font.GothamBold
-autoRollButton.TextSize = 14
-autoRollButton.TextColor3 = Color3.fromRGB(150, 150, 160)
-autoRollButton.Text = "AUTO\nOFF"
+autoRollButton.TextSize = 11
+autoRollButton.TextColor3 = Color3.fromRGB(140, 140, 160)
+autoRollButton.Text = "🔁\nAUTO"
 autoRollButton.ZIndex = 5
 autoRollButton.Parent = rollButtonContainer
 
 local autoRollCorner = Instance.new("UICorner")
-autoRollCorner.CornerRadius = UDim.new(0, 12)
+autoRollCorner.CornerRadius = UDim.new(1, 0)
 autoRollCorner.Parent = autoRollButton
 
 local autoRollStroke = Instance.new("UIStroke")
-autoRollStroke.Color = Color3.fromRGB(80, 80, 90)
-autoRollStroke.Thickness = 2
+autoRollStroke.Color = Color3.fromRGB(70, 70, 90)
+autoRollStroke.Thickness = 1.5
 autoRollStroke.Parent = autoRollButton
+
+-- 👁️ HIDE/SHOW button
+local hideButton = Instance.new("TextButton")
+hideButton.Name = "HideResultsButton"
+hideButton.Size = UDim2.fromOffset(56, 60)
+hideButton.Position = UDim2.fromOffset(300, 0)
+hideButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+hideButton.BorderSizePixel = 0
+hideButton.Font = Enum.Font.GothamBold
+hideButton.TextSize = 11
+hideButton.TextColor3 = Color3.fromRGB(140, 140, 160)
+hideButton.Text = "👁️\nSHOW"
+hideButton.ZIndex = 5
+hideButton.Parent = rollButtonContainer
+
+local hideButtonCorner = Instance.new("UICorner")
+hideButtonCorner.CornerRadius = UDim.new(1, 0)
+hideButtonCorner.Parent = hideButton
+
+local hideButtonStroke = Instance.new("UIStroke")
+hideButtonStroke.Color = Color3.fromRGB(70, 70, 90)
+hideButtonStroke.Thickness = 1.5
+hideButtonStroke.Parent = hideButton
+
+-- Shared hover/press tweens for small buttons
+local function smallBtnHover(btn)
+	TweenService:Create(btn, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Size = UDim2.fromOffset(62, 66),
+		Position = btn.Position - UDim2.fromOffset(3, 3)
+	}):Play()
+end
+local function smallBtnLeave(btn, origPos)
+	TweenService:Create(btn, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Size = UDim2.fromOffset(56, 60),
+		Position = origPos
+	}):Play()
+end
+local function smallBtnPress(btn, origPos)
+	TweenService:Create(btn, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Size = UDim2.fromOffset(52, 56),
+		Position = origPos + UDim2.fromOffset(2, 2)
+	}):Play()
+end
+
+local autoOrigPos = autoRollButton.Position
+autoRollButton.MouseEnter:Connect(function()  smallBtnHover(autoRollButton) end)
+autoRollButton.MouseLeave:Connect(function()  smallBtnLeave(autoRollButton, autoOrigPos) end)
+autoRollButton.MouseButton1Down:Connect(function() smallBtnPress(autoRollButton, autoOrigPos) end)
+autoRollButton.MouseButton1Up:Connect(function()   smallBtnLeave(autoRollButton, autoOrigPos) end)
+
+local hideOrigPos = hideButton.Position
+hideButton.MouseEnter:Connect(function()  smallBtnHover(hideButton) end)
+hideButton.MouseLeave:Connect(function()  smallBtnLeave(hideButton, hideOrigPos) end)
+hideButton.MouseButton1Down:Connect(function() smallBtnPress(hideButton, hideOrigPos) end)
+hideButton.MouseButton1Up:Connect(function()   smallBtnLeave(hideButton, hideOrigPos) end)
+
+local hideResults = false
+
+hideButton.MouseButton1Click:Connect(function()
+	hideResults = not hideResults
+	if hideResults then
+		hideButton.BackgroundColor3 = Color3.fromRGB(40, 5, 30)
+		hideButton.TextColor3 = Color3.fromRGB(255, 80, 180)
+		hideButton.Text = "🙈\nHIDE"
+		hideButtonStroke.Color = Color3.fromRGB(255, 60, 160)
+	else
+		hideButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+		hideButton.TextColor3 = Color3.fromRGB(140, 140, 160)
+		hideButton.Text = "👁️\nSHOW"
+		hideButtonStroke.Color = Color3.fromRGB(70, 70, 90)
+	end
+end)
 
 local autoRollEnabled = false
 local AUTO_ROLL_GAMEPASS_ID = 12345678 -- Placeholder Gamepass ID
@@ -429,7 +617,7 @@ local function playRollAnimation(item)
 
 	-- 2. Show reel and spin
 	reelContainer.Visible = true
-	reelContainer.Size = UDim2.new(0.7, 0, 0.1, 0)
+	reelContainer.Size = UDim2.fromOffset(300, 80)
 	reelContainer.Position = UDim2.fromScale(0.5, 0.4)
 
 	-- Create reel items
@@ -543,6 +731,8 @@ local function playRollAnimation(item)
 	-- Show slot icon text as placeholder
 	local slotIcons = { Head = "👑", Body = "👔", Legs = "👟" }
 	if iconImage.Image == "" then
+		local existing = iconFrame:FindFirstChild("SlotIcon")
+		if existing then existing:Destroy() end
 		local slotIcon = Instance.new("TextLabel")
 		slotIcon.Name = "SlotIcon"
 		slotIcon.Size = UDim2.fromScale(1, 1)
@@ -553,8 +743,6 @@ local function playRollAnimation(item)
 		slotIcon.Text = slotIcons[item.slot] or "?"
 		slotIcon.ZIndex = 18
 		slotIcon.Parent = iconFrame
-
-		-- Clean up later
 		task.delay(4, function()
 			if slotIcon.Parent then slotIcon:Destroy() end
 		end)
@@ -562,7 +750,7 @@ local function playRollAnimation(item)
 
 	nameLabel.Text = item.name
 	nameLabel.TextColor3 = rarityColor
-	
+
 	local nameStroke = nameLabel:FindFirstChild("UIStroke") or Instance.new("UIStroke")
 	nameStroke.Color = Color3.fromRGB(20, 20, 25)
 	nameStroke.Thickness = 2
@@ -583,10 +771,10 @@ local function playRollAnimation(item)
 	coinLabel.Text = "💰 +" .. tostring(coinDrop) .. " Vibe Coins"
 
 	-- Animate card entrance
-	resultCard.Position = UDim2.fromScale(0.5, 1.5) -- start below screen
+	resultCard.Position = UDim2.fromScale(0.5, 1.5)
 	resultCard.Visible = true
-	resultCard.Size = UDim2.fromScale(0.7, 0.6)
-	
+	resultCard.Size = UDim2.fromOffset(320, 460)
+
 	if isEpicPlus then
 		auraImage.Visible = true
 		auraImage.ImageColor3 = rarityColor
@@ -604,8 +792,8 @@ local function playRollAnimation(item)
 		{ Position = UDim2.fromScale(0.5, 0.5) }
 	)
 	entranceTween:Play()
-	
-	-- Screen Shake
+
+	-- Screen Shake for Legendary / Mythic
 	if item.rarity == "Legendary" or isMythic then
 		task.spawn(function()
 			local character = player.Character
@@ -625,7 +813,7 @@ local function playRollAnimation(item)
 			end
 		end)
 	end
-	
+
 	-- Wobble floating animation
 	task.spawn(function()
 		entranceTween.Completed:Wait()
@@ -647,11 +835,11 @@ local function playRollAnimation(item)
 		task.spawn(function()
 			for _ = 1, 3 do
 				TweenService:Create(resultCard, TweenInfo.new(0.2), {
-					Size = UDim2.fromScale(0.73, 0.63)
+					Size = UDim2.fromOffset(330, 470)
 				}):Play()
 				task.wait(0.2)
 				TweenService:Create(resultCard, TweenInfo.new(0.2), {
-					Size = UDim2.fromScale(0.7, 0.6)
+					Size = UDim2.fromOffset(320, 460)
 				}):Play()
 				task.wait(0.2)
 			end
@@ -669,11 +857,10 @@ local function playRollAnimation(item)
 		Transparency = 0,
 	}):Play()
 
-	-- Wire up the Equip Now button
+	-- Wire up Equip Now button
 	local equipConn
 	equipConn = equipNowButton.MouseButton1Click:Connect(function()
 		if equipConn then equipConn:Disconnect() end
-		-- Close the result card immediately
 		isAnimating = false
 		equipNowButton.Visible = false
 		TweenService:Create(resultCard, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
@@ -687,13 +874,11 @@ local function playRollAnimation(item)
 			overlay.Visible = false
 			auraImage.Visible = false
 			for _, child in ipairs(reelFrame:GetChildren()) do child:Destroy() end
-			-- Re-enable roll button
 			mainRollButton.Text = "🎲 ROLL"
 			mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
 			mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
 			mainRollGradient.Enabled = true
 		end)
-		-- Open inventory to the correct slot
 		task.delay(0.2, function()
 			if _G.InventoryController then
 				_G.InventoryController.OpenToSlot(item.slot)
@@ -706,14 +891,12 @@ local function playRollAnimation(item)
 		end)
 	end)
 
-	-- 4. Wait then fade out
+	-- 4. Wait then auto-fade out
 	task.wait(isEpicPlus and 4.5 or 3.5)
 
-	-- Fade out
 	TweenService:Create(overlay, TweenInfo.new(0.5), {
 		BackgroundTransparency = 1
 	}):Play()
-
 	TweenService:Create(resultCard, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
 		Position = UDim2.fromScale(0.5, -0.5)
 	}):Play()
@@ -725,12 +908,10 @@ local function playRollAnimation(item)
 	auraImage.Visible = false
 	equipNowButton.Visible = false
 
-	-- Clean up reel items
 	for _, child in ipairs(reelFrame:GetChildren()) do
 		child:Destroy()
 	end
 
-	-- Re-enable roll button
 	mainRollButton.Text = "🎲 ROLL"
 	mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
 	mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
@@ -756,36 +937,41 @@ local function requestRoll()
 	end
 end
 
--- Hover Tweens
+-- ============================================================
+-- ROLL BUTTON HOVER / PRESS TWEENS
+-- ============================================================
 mainRollButton.MouseEnter:Connect(function()
 	if not isAnimating then
-		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Size = UDim2.fromScale(0.78, 1.05),
+		TweenService:Create(mainRollButton, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(244, 66),
+			Position = UDim2.fromOffset(-7, -3)
 		}):Play()
 	end
 end)
 
 mainRollButton.MouseLeave:Connect(function()
 	if not isAnimating then
-		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Size = UDim2.fromScale(0.75, 1),
+		TweenService:Create(mainRollButton, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(230, 60),
+			Position = UDim2.fromOffset(0, 0)
 		}):Play()
 	end
 end)
 
--- Click Tweens & Logic
 mainRollButton.MouseButton1Down:Connect(function()
 	if not isAnimating then
-		TweenService:Create(mainRollButton, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = UDim2.fromScale(0.72, 0.95),
+		TweenService:Create(mainRollButton, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(220, 55),
+			Position = UDim2.fromOffset(5, 2)
 		}):Play()
 	end
 end)
 
 mainRollButton.MouseButton1Up:Connect(function()
 	if not isAnimating then
-		TweenService:Create(mainRollButton, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Size = UDim2.fromScale(0.78, 1.05),
+		TweenService:Create(mainRollButton, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.fromOffset(244, 66),
+			Position = UDim2.fromOffset(-7, -3)
 		}):Play()
 	end
 end)
@@ -796,38 +982,50 @@ autoRollButton.MouseButton1Click:Connect(function()
 	local success, hasPass = pcall(function()
 		return MarketplaceService:UserOwnsGamePassAsync(player.UserId, AUTO_ROLL_GAMEPASS_ID)
 	end)
-	
+
 	if success and hasPass then
 		autoRollEnabled = not autoRollEnabled
 		if autoRollEnabled then
-			autoRollButton.BackgroundColor3 = Color3.fromRGB(30, 180, 70)
-			autoRollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-			autoRollButton.Text = "AUTO\nON"
-			autoRollStroke.Color = Color3.fromRGB(50, 220, 100)
-			
-			-- Instantly trigger if idle
+			autoRollButton.BackgroundColor3 = Color3.fromRGB(10, 35, 10)
+			autoRollButton.TextColor3 = Color3.fromRGB(100, 255, 120)
+			autoRollButton.Text = "🔄\nLIVE"
+			autoRollStroke.Color = Color3.fromRGB(60, 255, 100)
 			if not isAnimating then
 				requestRoll()
 			end
 		else
-			autoRollButton.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-			autoRollButton.TextColor3 = Color3.fromRGB(150, 150, 160)
-			autoRollButton.Text = "AUTO\nOFF"
-			autoRollStroke.Color = Color3.fromRGB(80, 80, 90)
+			autoRollButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+			autoRollButton.TextColor3 = Color3.fromRGB(140, 140, 160)
+			autoRollButton.Text = "🔁\nAUTO"
+			autoRollStroke.Color = Color3.fromRGB(70, 70, 90)
 		end
 	else
-		-- Prompt purchase
 		MarketplaceService:PromptGamePassPurchase(player, AUTO_ROLL_GAMEPASS_ID)
 	end
 end)
 
 RollResultEvent.OnClientEvent:Connect(function(item)
 	if item and item.name then
-		playRollAnimation(item)
-		
+		local shouldShow = ALWAYS_SHOW[item.rarity] or not hideResults
+
+		if shouldShow then
+			playRollAnimation(item)
+		else
+			-- Silent roll — just show a small toast
+			showToast(item)
+			-- Re-enable roll button immediately (no animation lock)
+			mainRollButton.Text = "🎲 ROLL"
+			mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+			mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
+			mainRollGradient.Enabled = true
+		end
+
 		-- Loop auto roll if enabled
 		if autoRollEnabled then
-			task.wait(0.2)
+			if shouldShow then
+				-- wait for animation to finish before next roll
+				task.wait(0.2)
+			end
 			requestRoll()
 		end
 	end
