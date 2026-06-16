@@ -19,10 +19,10 @@ local shopScreen = playerGui:WaitForChild("ShopScreen")
 -- Replace 0s with actual Developer Product IDs
 -- ============================================================
 local PRODUCTS = {
-	{ name = "Vibe Starter Pack", productId = 0, price = "79 R$",  desc = "10 rolls • First guaranteed Rare+",    icon = "🎁" },
-	{ name = "Hype Pack",         productId = 0, price = "199 R$", desc = "30 rolls + 500 Coins + 1 Epic",        icon = "🔥" },
-	{ name = "Capsule Key",       productId = 0, price = "399 R$", desc = "Weekend Designer Capsule access",       icon = "🔮" },
-	{ name = "Mythic Wish",       productId = 0, price = "999 R$", desc = "1 guaranteed Mythic item",              icon = "💀" },
+	{ name = "Vibe Starter Pack", productId = 0, price = "79 R$",  desc = "10 rolls • First guaranteed Rare+",    icon = "V" },
+	{ name = "Hype Pack",         productId = 0, price = "199 R$", desc = "30 rolls + 500 Coins + 1 Epic",        icon = "H" },
+	{ name = "Capsule Key",       productId = 0, price = "399 R$", desc = "Weekend Designer Capsule access",       icon = "C" },
+	{ name = "Mythic Wish",       productId = 0, price = "999 R$", desc = "1 guaranteed Mythic item",              icon = "M" },
 }
 
 local ROLL_COST = 100 -- Vibe Coins per standard roll
@@ -84,10 +84,11 @@ local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(0.7, 0, 1, 0)
 titleLabel.Position = UDim2.fromOffset(20, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextSize = 22
+titleLabel.Font = Enum.Font.GothamBlack
+titleLabel.TextSize = 24
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.Text = "🛍️ VIBE SHOP"
+titleLabel.RichText = true
+titleLabel.Text = '<font tracking="2">VIBE SHOP</font>'
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.ZIndex = 7
 titleLabel.Parent = titleBar
@@ -132,10 +133,10 @@ local balanceLabel = Instance.new("TextLabel")
 balanceLabel.Name = "Balance"
 balanceLabel.Size = UDim2.fromScale(1, 1)
 balanceLabel.BackgroundTransparency = 1
-balanceLabel.Font = Enum.Font.GothamBold
+balanceLabel.Font = Enum.Font.GothamBlack
 balanceLabel.TextSize = 18
 balanceLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
-balanceLabel.Text = "💰 0 Vibe Coins"
+balanceLabel.Text = "V 0 VIBE COINS"
 balanceLabel.ZIndex = 7
 balanceLabel.Parent = balanceFrame
 
@@ -145,10 +146,11 @@ premiumLabel.Size = UDim2.new(0.9, 0, 0, 25)
 premiumLabel.Position = UDim2.new(0.5, 0, 0, 108)
 premiumLabel.AnchorPoint = Vector2.new(0.5, 0)
 premiumLabel.BackgroundTransparency = 1
-premiumLabel.Font = Enum.Font.GothamBold
+premiumLabel.Font = Enum.Font.GothamBlack
 premiumLabel.TextSize = 14
 premiumLabel.TextColor3 = Color3.fromRGB(120, 120, 130)
-premiumLabel.Text = "PREMIUM PACKS"
+premiumLabel.RichText = true
+premiumLabel.Text = '<font tracking="2">PREMIUM PACKS</font>'
 premiumLabel.TextXAlignment = Enum.TextXAlignment.Left
 premiumLabel.ZIndex = 6
 premiumLabel.Parent = mainFrame
@@ -188,13 +190,13 @@ for _, product in ipairs(PRODUCTS) do
 	cardStroke.Thickness = 1
 	cardStroke.Parent = card
 
-	-- Icon
 	local productIcon = Instance.new("TextLabel")
 	productIcon.Size = UDim2.fromOffset(45, 70)
 	productIcon.Position = UDim2.fromOffset(10, 0)
 	productIcon.BackgroundTransparency = 1
-	productIcon.Font = Enum.Font.GothamBold
+	productIcon.Font = Enum.Font.GothamBlack
 	productIcon.TextSize = 28
+	productIcon.TextColor3 = Color3.fromRGB(160, 80, 255)
 	productIcon.Text = product.icon
 	productIcon.ZIndex = 8
 	productIcon.Parent = card
@@ -271,10 +273,11 @@ shopOpenButton.Position = UDim2.new(0.5, 4, 1, -6) -- bottom center, slightly ri
 shopOpenButton.AnchorPoint = Vector2.new(0, 1)  -- anchored to bottom-left of itself
 shopOpenButton.BackgroundColor3 = Color3.fromRGB(139, 0, 255)
 shopOpenButton.BorderSizePixel = 0
-shopOpenButton.Font = Enum.Font.GothamBold
+shopOpenButton.Font = Enum.Font.GothamBlack
 shopOpenButton.TextSize = 18
 shopOpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-shopOpenButton.Text = "🛍️  SHOP"
+shopOpenButton.RichText = true
+shopOpenButton.Text = '<font tracking="2">SHOP</font>'
 shopOpenButton.ZIndex = 5
 shopOpenButton.Parent = hudScreenRef
 
@@ -305,7 +308,7 @@ end)
 LookbookDataEvent.OnClientEvent:Connect(function(data)
 	localPlayerData = data
 	if data then
-		balanceLabel.Text = "💰 " .. tostring(data.VibeCoin or 0) .. " Vibe Coins"
+		balanceLabel.Text = "V " .. tostring(data.VibeCoin or 0) .. " VIBE COINS"
 	end
 end)
 

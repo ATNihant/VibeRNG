@@ -110,10 +110,11 @@ local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(0.7, 0, 1, 0)
 titleLabel.Position = UDim2.fromOffset(18, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextSize = 22
+titleLabel.Font = Enum.Font.GothamBlack
+titleLabel.TextSize = 24
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.Text = "🎒 INVENTORY"
+titleLabel.RichText = true
+titleLabel.Text = '<font tracking="2">INVENTORY</font>'
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.ZIndex = 7
 titleLabel.Parent = titleBar
@@ -162,9 +163,9 @@ end)
 -- SLOT DEFINITIONS (shared)
 -- ============================================================
 local SLOT_DEFS = {
-	{ name = "Head", icon = "👑" },
-	{ name = "Body", icon = "👔" },
-	{ name = "Legs", icon = "👟" },
+	{ name = "Head", icon = "" },
+	{ name = "Body", icon = "" },
+	{ name = "Legs", icon = "" },
 }
 
 local equippedSlotLabels = {}  -- slot name -> labels table for updating
@@ -221,9 +222,10 @@ local function createTab(name, icon, order)
 	tab.BackgroundColor3 = Color3.fromRGB(28, 22, 44)
 	tab.BorderSizePixel = 0
 	tab.Font = Enum.Font.GothamBold
-	tab.TextSize = 11
+	tab.TextSize = 12
 	tab.TextColor3 = Color3.fromRGB(140, 120, 180)
-	tab.Text = icon .. " " .. name:upper()
+	tab.RichText = true
+	tab.Text = '<font tracking="1">' .. name:upper() .. '</font>'
 	tab.LayoutOrder = order
 	tab.ZIndex = 7
 	tab.Parent = sideBar
@@ -342,10 +344,10 @@ for _, slotDef in ipairs(SLOT_DEFS) do
 	slotIcon.Size = UDim2.fromOffset(24, 44)
 	slotIcon.Position = UDim2.fromOffset(5, 0)
 	slotIcon.BackgroundTransparency = 1
-	slotIcon.Font = Enum.Font.GothamBold
-	slotIcon.TextSize = 14
+	slotIcon.Font = Enum.Font.GothamBlack
+	slotIcon.TextSize = 18
 	slotIcon.TextColor3 = Color3.fromRGB(180, 150, 220)
-	slotIcon.Text = slotDef.icon
+	slotIcon.Text = string.sub(slotDef.name, 1, 1)
 	slotIcon.ZIndex = 8
 	slotIcon.Parent = cell
 
@@ -424,10 +426,11 @@ local function createItemCard(item, isOwned, isEquipped)
 		local badgeLabel = Instance.new("TextLabel")
 		badgeLabel.Size = UDim2.fromScale(1, 1)
 		badgeLabel.BackgroundTransparency = 1
-		badgeLabel.Font = Enum.Font.GothamBold
-		badgeLabel.TextSize = 8
+		badgeLabel.Font = Enum.Font.GothamBlack
+		badgeLabel.TextSize = 9
 		badgeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-		badgeLabel.Text = "✦ EQUIPPED"
+		badgeLabel.RichText = true
+		badgeLabel.Text = '<font tracking="1">EQUIPPED</font>'
 		badgeLabel.ZIndex = 11
 		badgeLabel.Parent = equippedBadge
 	end
@@ -446,17 +449,16 @@ local function createItemCard(item, isOwned, isEquipped)
 	iconAreaCorner.CornerRadius = UDim.new(0, 8)
 	iconAreaCorner.Parent = iconArea
 
-	-- Slot icon
-	local slotIcons = { Head = "👑", Body = "👔", Legs = "👟" }
+	-- Slot icon / lettermark
 	local slotIcon = Instance.new("TextLabel")
 	slotIcon.Size = UDim2.fromScale(1, 1)
 	slotIcon.BackgroundTransparency = 1
-	slotIcon.Font = Enum.Font.GothamBold
-	slotIcon.TextSize = 30
+	slotIcon.Font = Enum.Font.GothamBlack
+	slotIcon.TextSize = 36
 	slotIcon.TextColor3 = isOwned
 		and (RARITY_COLORS[item.rarity] or Color3.fromRGB(150, 150, 150))
 		or Color3.fromRGB(45, 40, 60)
-	slotIcon.Text = slotIcons[item.slot] or "?"
+	slotIcon.Text = string.sub(item.slot, 1, 1)
 	slotIcon.ZIndex = 9
 	slotIcon.TextTransparency = isOwned and 0 or 0.5
 	slotIcon.Parent = iconArea
@@ -511,14 +513,16 @@ local function createItemCard(item, isOwned, isEquipped)
 		actionBtnCorner.Parent = actionBtn
 
 		if isEquipped then
-			actionBtn.Text = "✕  UNEQUIP"
+			actionBtn.Text = '<font tracking="2">UNEQUIP</font>'
+			actionBtn.RichText = true
 			actionBtn.BackgroundColor3 = Color3.fromRGB(55, 20, 20)
 			actionBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
 			actionBtn.MouseButton1Click:Connect(function()
 				UnequipItemEvent:FireServer(item.slot)
 			end)
 		else
-			actionBtn.Text = "✦  EQUIP"
+			actionBtn.Text = '<font tracking="2">EQUIP</font>'
+			actionBtn.RichText = true
 			actionBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 20)
 			actionBtn.TextColor3 = Color3.fromRGB(100, 230, 130)
 			actionBtn.MouseButton1Click:Connect(function()
@@ -538,16 +542,16 @@ local function createItemCard(item, isOwned, isEquipped)
 			}):Play()
 		end)
 	else
-		-- "LOCKED" label for unowned items
 		local lockedLabel = Instance.new("TextLabel")
 		lockedLabel.Size = UDim2.new(0.82, 0, 0, 22)
 		lockedLabel.Position = UDim2.new(0.5, 0, 1, -8)
 		lockedLabel.AnchorPoint = Vector2.new(0.5, 1)
 		lockedLabel.BackgroundTransparency = 1
-		lockedLabel.Font = Enum.Font.Gotham
+		lockedLabel.Font = Enum.Font.GothamBlack
 		lockedLabel.TextSize = 10
 		lockedLabel.TextColor3 = Color3.fromRGB(60, 55, 75)
-		lockedLabel.Text = "🔒 Not Owned"
+		lockedLabel.RichText = true
+		lockedLabel.Text = '<font tracking="1">LOCKED</font>'
 		lockedLabel.ZIndex = 8
 		lockedLabel.Parent = card
 	end

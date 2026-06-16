@@ -9,7 +9,8 @@ local AestheticsData = {}
 -- HEAD ITEMS
 -- ============================================================
 AestheticsData.Head = {
-	-- COMMON (5)
+	-- COMMON (6)
+	{ id = "H999", name = "Test Crown",             aesthetic = "Y2K",            slot = "Head", rarity = "Common",    icon = "rbxassetid://0", model = "TestCrownAcc", isCapsule = false, isVaulted = false },
 	{ id = "H001", name = "Basic Beanie",          aesthetic = "Gorpcore",       slot = "Head", rarity = "Common",    icon = "rbxassetid://0", model = "rbxassetid://0", isCapsule = false, isVaulted = false },
 	{ id = "H002", name = "Lo-Fi Headphones",       aesthetic = "Vaporwave",      slot = "Head", rarity = "Common",    icon = "rbxassetid://0", model = "rbxassetid://0", isCapsule = false, isVaulted = false },
 	{ id = "H003", name = "Plaid Beret",            aesthetic = "Dark Academia",  slot = "Head", rarity = "Common",    icon = "rbxassetid://0", model = "rbxassetid://0", isCapsule = false, isVaulted = false },

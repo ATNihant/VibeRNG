@@ -250,10 +250,11 @@ equipNowButton.Position = UDim2.new(0.5, 0, 0, 408)
 equipNowButton.AnchorPoint = Vector2.new(0.5, 0)
 equipNowButton.BackgroundColor3 = Color3.fromRGB(70, 10, 150)
 equipNowButton.BorderSizePixel = 0
-equipNowButton.Font = Enum.Font.GothamBold
+equipNowButton.Font = Enum.Font.GothamBlack
 equipNowButton.TextSize = 14
 equipNowButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-equipNowButton.Text = "🎒 EQUIP NOW"
+equipNowButton.RichText = true
+equipNowButton.Text = '<font tracking="2">EQUIP NOW</font>'
 equipNowButton.Visible = false
 equipNowButton.ZIndex = 17
 equipNowButton.Parent = resultCard
@@ -423,10 +424,11 @@ mainRollButton.Size = UDim2.fromOffset(230, 60)
 mainRollButton.Position = UDim2.fromOffset(0, 0)
 mainRollButton.BackgroundColor3 = Color3.fromRGB(180, 40, 255)
 mainRollButton.BorderSizePixel = 0
-mainRollButton.Font = Enum.Font.GothamBold
+mainRollButton.Font = Enum.Font.GothamBlack
 mainRollButton.TextSize = 22
 mainRollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-mainRollButton.Text = "✨ ROLL IT"
+mainRollButton.RichText = true
+mainRollButton.Text = '<font tracking="2">ROLL IT</font>'
 mainRollButton.ZIndex = 5
 mainRollButton.Parent = rollButtonContainer
 
@@ -469,10 +471,11 @@ autoRollButton.Size = UDim2.fromOffset(56, 60)
 autoRollButton.Position = UDim2.fromOffset(238, 0)
 autoRollButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 autoRollButton.BorderSizePixel = 0
-autoRollButton.Font = Enum.Font.GothamBold
+autoRollButton.Font = Enum.Font.GothamBlack
 autoRollButton.TextSize = 11
 autoRollButton.TextColor3 = Color3.fromRGB(140, 140, 160)
-autoRollButton.Text = "🔁\nAUTO"
+autoRollButton.RichText = true
+autoRollButton.Text = '<font tracking="2">AUTO</font>'
 autoRollButton.ZIndex = 5
 autoRollButton.Parent = rollButtonContainer
 
@@ -492,10 +495,11 @@ hideButton.Size = UDim2.fromOffset(56, 60)
 hideButton.Position = UDim2.fromOffset(300, 0)
 hideButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 hideButton.BorderSizePixel = 0
-hideButton.Font = Enum.Font.GothamBold
+hideButton.Font = Enum.Font.GothamBlack
 hideButton.TextSize = 11
 hideButton.TextColor3 = Color3.fromRGB(140, 140, 160)
-hideButton.Text = "👁️\nSHOW"
+hideButton.RichText = true
+hideButton.Text = '<font tracking="2">SHOW</font>'
 hideButton.ZIndex = 5
 hideButton.Parent = rollButtonContainer
 
@@ -547,12 +551,12 @@ hideButton.MouseButton1Click:Connect(function()
 	if hideResults then
 		hideButton.BackgroundColor3 = Color3.fromRGB(40, 5, 30)
 		hideButton.TextColor3 = Color3.fromRGB(255, 80, 180)
-		hideButton.Text = "🙈\nHIDE"
+		hideButton.Text = '<font tracking="2">HIDE</font>'
 		hideButtonStroke.Color = Color3.fromRGB(255, 60, 160)
 	else
 		hideButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 		hideButton.TextColor3 = Color3.fromRGB(140, 140, 160)
-		hideButton.Text = "👁️\nSHOW"
+		hideButton.Text = '<font tracking="2">SHOW</font>'
 		hideButtonStroke.Color = Color3.fromRGB(70, 70, 90)
 	end
 end)
@@ -729,7 +733,6 @@ local function playRollAnimation(item)
 	end
 
 	-- Show slot icon text as placeholder
-	local slotIcons = { Head = "👑", Body = "👔", Legs = "👟" }
 	if iconImage.Image == "" then
 		local existing = iconFrame:FindFirstChild("SlotIcon")
 		if existing then existing:Destroy() end
@@ -737,10 +740,10 @@ local function playRollAnimation(item)
 		slotIcon.Name = "SlotIcon"
 		slotIcon.Size = UDim2.fromScale(1, 1)
 		slotIcon.BackgroundTransparency = 1
-		slotIcon.Font = Enum.Font.GothamBold
+		slotIcon.Font = Enum.Font.GothamBlack
 		slotIcon.TextSize = 48
 		slotIcon.TextColor3 = rarityColor
-		slotIcon.Text = slotIcons[item.slot] or "?"
+		slotIcon.Text = string.sub(item.slot, 1, 1)
 		slotIcon.ZIndex = 18
 		slotIcon.Parent = iconFrame
 		task.delay(4, function()
@@ -768,7 +771,7 @@ local function playRollAnimation(item)
 	slotLabel.Text = item.slot:upper() .. " SLOT"
 
 	local coinDrop = COIN_DROPS[item.rarity] or 0
-	coinLabel.Text = "💰 +" .. tostring(coinDrop) .. " Vibe Coins"
+	coinLabel.Text = "V +" .. tostring(coinDrop) .. " VIBE COINS"
 
 	-- Animate card entrance
 	resultCard.Position = UDim2.fromScale(0.5, 1.5)
@@ -874,7 +877,7 @@ local function playRollAnimation(item)
 			overlay.Visible = false
 			auraImage.Visible = false
 			for _, child in ipairs(reelFrame:GetChildren()) do child:Destroy() end
-			mainRollButton.Text = "🎲 ROLL"
+			mainRollButton.Text = '<font tracking="2">ROLL</font>'
 			mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
 			mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
 			mainRollGradient.Enabled = true
@@ -912,7 +915,7 @@ local function playRollAnimation(item)
 		child:Destroy()
 	end
 
-	mainRollButton.Text = "🎲 ROLL"
+	mainRollButton.Text = '<font tracking="2">ROLL</font>'
 	mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
 	mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
 	mainRollGradient.Enabled = true
@@ -988,7 +991,7 @@ autoRollButton.MouseButton1Click:Connect(function()
 		if autoRollEnabled then
 			autoRollButton.BackgroundColor3 = Color3.fromRGB(10, 35, 10)
 			autoRollButton.TextColor3 = Color3.fromRGB(100, 255, 120)
-			autoRollButton.Text = "🔄\nLIVE"
+			autoRollButton.Text = '<font tracking="2">LIVE</font>'
 			autoRollStroke.Color = Color3.fromRGB(60, 255, 100)
 			if not isAnimating then
 				requestRoll()
@@ -996,7 +999,7 @@ autoRollButton.MouseButton1Click:Connect(function()
 		else
 			autoRollButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 			autoRollButton.TextColor3 = Color3.fromRGB(140, 140, 160)
-			autoRollButton.Text = "🔁\nAUTO"
+			autoRollButton.Text = '<font tracking="2">AUTO</font>'
 			autoRollStroke.Color = Color3.fromRGB(70, 70, 90)
 		end
 	else
@@ -1014,7 +1017,7 @@ RollResultEvent.OnClientEvent:Connect(function(item)
 			-- Silent roll — just show a small toast
 			showToast(item)
 			-- Re-enable roll button immediately (no animation lock)
-			mainRollButton.Text = "🎲 ROLL"
+			mainRollButton.Text = '<font tracking="2">ROLL</font>'
 			mainRollButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
 			mainRollStroke.Color = Color3.fromRGB(150, 220, 255)
 			mainRollGradient.Enabled = true

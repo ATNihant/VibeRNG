@@ -92,6 +92,14 @@ local function applyItemVisual(slot, item)
 		return
 	end
 
+	-- For custom local accessories (like test ones)
+	if type(item.model) == "string" and ReplicatedStorage:FindFirstChild(item.model) then
+		local acc = ReplicatedStorage[item.model]:Clone()
+		character.Humanoid:AddAccessory(acc)
+		appliedVisuals[slot] = acc
+		return
+	end
+
 	-- TODO: When real model asset IDs are available, use InsertService or
 	-- HumanoidDescription to apply actual accessories/clothing
 	-- For now, placeholder models get the particle effect above

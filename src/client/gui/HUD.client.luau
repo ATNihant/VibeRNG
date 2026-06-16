@@ -57,9 +57,10 @@ local coinIcon = Instance.new("TextLabel")
 coinIcon.Size = UDim2.fromOffset(36, 44)
 coinIcon.Position = UDim2.fromOffset(8, 0)
 coinIcon.BackgroundTransparency = 1
-coinIcon.Font = Enum.Font.GothamBold
+coinIcon.Font = Enum.Font.GothamBlack
 coinIcon.TextSize = 22
-coinIcon.Text = "💰"
+coinIcon.TextColor3 = Color3.fromRGB(255, 215, 0)
+coinIcon.Text = "V"
 coinIcon.ZIndex = 6
 coinIcon.Parent = coinFrame
 
@@ -107,9 +108,10 @@ local rollIcon = Instance.new("TextLabel")
 rollIcon.Size = UDim2.fromOffset(30, 32)
 rollIcon.Position = UDim2.fromOffset(8, 0)
 rollIcon.BackgroundTransparency = 1
-rollIcon.Font = Enum.Font.GothamBold
-rollIcon.TextSize = 16
-rollIcon.Text = "🎲"
+rollIcon.Font = Enum.Font.GothamBlack
+rollIcon.TextSize = 20
+rollIcon.TextColor3 = Color3.fromRGB(180, 180, 220)
+rollIcon.Text = "R"
 rollIcon.ZIndex = 6
 rollIcon.Parent = rollFrame
 
@@ -288,10 +290,11 @@ inventoryButton.Position = UDim2.fromScale(0.5, 0.5)
 inventoryButton.AnchorPoint = Vector2.new(0.5, 0.5)
 inventoryButton.BackgroundColor3 = Color3.fromRGB(70, 10, 150)
 inventoryButton.BorderSizePixel = 0
-inventoryButton.Font = Enum.Font.GothamBold
-inventoryButton.TextSize = 18
+inventoryButton.Font = Enum.Font.GothamBlack
+inventoryButton.TextSize = 16
 inventoryButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-inventoryButton.Text = "🎒  INVENTORY"
+inventoryButton.RichText = true
+inventoryButton.Text = '<font tracking="2">INVENTORY</font>'
 inventoryButton.ZIndex = 5
 inventoryButton.Parent = inventoryBtnFrame
 

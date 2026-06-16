@@ -49,9 +49,10 @@ bannerText.Size = UDim2.fromScale(0.9, 1)
 bannerText.Position = UDim2.fromScale(0.5, 0.5)
 bannerText.AnchorPoint = Vector2.new(0.5, 0.5)
 bannerText.BackgroundTransparency = 1
-bannerText.Font = Enum.Font.GothamBold
+bannerText.Font = Enum.Font.GothamBlack
 bannerText.TextSize = 20
 bannerText.TextColor3 = Color3.fromRGB(255, 255, 255)
+bannerText.RichText = true
 bannerText.Text = ""
 bannerText.ZIndex = 21
 bannerText.Parent = banner
@@ -68,10 +69,11 @@ joinButton.Position = UDim2.new(0.5, 0, 0, 75)
 joinButton.AnchorPoint = Vector2.new(0.5, 0)
 joinButton.BackgroundColor3 = Color3.fromRGB(30, 200, 80)
 joinButton.BorderSizePixel = 0
-joinButton.Font = Enum.Font.GothamBold
-joinButton.TextSize = 18
+joinButton.Font = Enum.Font.GothamBlack
+joinButton.TextSize = 16
 joinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-joinButton.Text = "✨ JOIN RUNWAY"
+joinButton.RichText = true
+joinButton.Text = '<font tracking="2">JOIN RUNWAY</font>'
 joinButton.Visible = false
 joinButton.ZIndex = 21
 joinButton.Parent = runwayScreen
@@ -201,9 +203,9 @@ local function createStarButtons()
 		star.Size = UDim2.fromOffset(32, 32)
 		star.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
 		star.BorderSizePixel = 0
-		star.Font = Enum.Font.GothamBold
-		star.TextSize = 20
-		star.Text = "⭐"
+		star.Font = Enum.Font.GothamBlack
+		star.TextSize = 24
+		star.Text = "★"
 		star.TextColor3 = Color3.fromRGB(255, 200, 50)
 		star.ZIndex = 22
 		star.Parent = starsFrame
@@ -264,10 +266,11 @@ resultsTitle.Size = UDim2.new(0.9, 0, 0, 40)
 resultsTitle.Position = UDim2.new(0.5, 0, 0, 10)
 resultsTitle.AnchorPoint = Vector2.new(0.5, 0)
 resultsTitle.BackgroundTransparency = 1
-resultsTitle.Font = Enum.Font.GothamBold
+resultsTitle.Font = Enum.Font.GothamBlack
 resultsTitle.TextSize = 22
 resultsTitle.TextColor3 = Color3.fromRGB(255, 200, 50)
-resultsTitle.Text = "👑 RUNWAY RESULTS"
+resultsTitle.RichText = true
+resultsTitle.Text = '<font tracking="2">RUNWAY RESULTS</font>'
 resultsTitle.ZIndex = 26
 resultsTitle.Parent = resultsFrame
 
@@ -294,7 +297,7 @@ resultsListLayout.Parent = resultsContainer
 -- Runway starts — show banner and join button
 RunwayStart.OnClientEvent:Connect(function(theme)
 	-- Animate banner in
-	bannerText.Text = "✨ RUNWAY — THEME: " .. theme:upper() .. " ✨"
+	bannerText.Text = '<font tracking="2">RUNWAY — THEME: ' .. theme:upper() .. '</font>'
 	banner.Position = UDim2.new(0.5, 0, -0.1, 0)
 
 	TweenService:Create(banner, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
@@ -313,9 +316,9 @@ end)
 joinButton.MouseButton1Click:Connect(function()
 	JoinRunway:FireServer()
 	joinButton.Visible = false
-	joinButton.Text = "✅ JOINED!"
+	joinButton.Text = '<font tracking="2">JOINED!</font>'
 	task.delay(2, function()
-		joinButton.Text = "✨ JOIN RUNWAY"
+		joinButton.Text = '<font tracking="2">JOIN RUNWAY</font>'
 	end)
 end)
 
@@ -377,10 +380,11 @@ RunwayYourTurn.OnClientEvent:Connect(function()
 	yourTurnLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 	yourTurnLabel.BackgroundColor3 = Color3.fromRGB(255, 200, 50)
 	yourTurnLabel.BorderSizePixel = 0
-	yourTurnLabel.Font = Enum.Font.GothamBold
+	yourTurnLabel.Font = Enum.Font.GothamBlack
 	yourTurnLabel.TextSize = 28
 	yourTurnLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-	yourTurnLabel.Text = "👟 YOUR TURN! WALK!"
+	yourTurnLabel.RichText = true
+	yourTurnLabel.Text = '<font tracking="2">YOUR TURN! WALK!</font>'
 	yourTurnLabel.ZIndex = 30
 	yourTurnLabel.Parent = runwayScreen
 
@@ -424,7 +428,7 @@ RunwayResults.OnClientEvent:Connect(function(results)
 	end
 
 	-- Populate results
-	local medals = { "🥇", "🥈", "🥉" }
+	local medals = { "I", "II", "III" }
 	for rank, entry in ipairs(results) do
 		local resultPlayer = Players:GetPlayerByUserId(entry.userId)
 		local displayName = resultPlayer and resultPlayer.DisplayName or ("Player " .. entry.userId)
@@ -471,7 +475,7 @@ RunwayResults.OnClientEvent:Connect(function(results)
 		scoreLabel.Font = Enum.Font.GothamBold
 		scoreLabel.TextSize = 16
 		scoreLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
-		scoreLabel.Text = "⭐ " .. tostring(entry.score)
+		scoreLabel.Text = "★ " .. tostring(entry.score)
 		scoreLabel.ZIndex = 28
 		scoreLabel.Parent = row
 	end
